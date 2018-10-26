@@ -17,7 +17,9 @@ export default function TodoList() {
           <TodoItem index={index} key={index} />
         ))}
       </ul>
-      Last updated: {lastUpdated ? new Date(lastUpdated).toString() : 'never'}
+      <div>
+        Last updated: {lastUpdated ? new Date(lastUpdated).toString() : 'never'}
+      </div>
     </div>
   );
 }
