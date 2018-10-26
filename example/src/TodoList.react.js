@@ -1,5 +1,5 @@
 import React from 'react';
-import {useStore} from './Store';
+import {useMappedState} from './Store';
 import TodoItem from './TodoItem.react';
 
 const mapState = state => ({
@@ -8,7 +8,7 @@ const mapState = state => ({
 });
 
 export default function TodoList() {
-  const {lastUpdated, todoCount} = useStore(mapState);
+  const {lastUpdated, todoCount} = useMappedState(mapState);
   return (
     <div>
       <div>Count: {todoCount}</div>
