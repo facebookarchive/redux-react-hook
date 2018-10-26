@@ -181,12 +181,10 @@ You're not memoizing the `mapState` function. Either declare it outside of your
 stateless functional component or wrap it in `useCallback` to avoid creating a
 new function every render.
 
-## Future
+## Contributing
 
-Contributions welcome!
-
-- Add `useMappedDispatch`, which is analagous to `mapDispatchToProps`
-- Add tests using Karma (hooks don't seem to run correctly in JSDOM yet)
+Contributions are definitely welcome! Check out the [issues](https://github.com/ianobermiller/redux-react-hook/issues)
+for ideas on where you can contribute.
 
 ## License
 
