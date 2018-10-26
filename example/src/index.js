@@ -1,7 +1,15 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-import './index.css'
-import App from './App'
+import './index.css';
+import App from './App.react';
+import {Context, makeStore} from './Store';
 
-ReactDOM.render(<App />, document.getElementById('root'))
+const store = makeStore();
+
+ReactDOM.render(
+  <Context.Provider value={store}>
+    <App />
+  </Context.Provider>,
+  document.getElementById('root'),
+);
