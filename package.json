@@ -34,20 +34,22 @@
     "babel-core": "^6.26.3",
     "babel-runtime": "^6.26.0",
     "cross-env": "^5.1.4",
-    "gh-pages": "^1.2.0",
+    "gh-pages": "^2.0.1",
     "react-dom": "^16.7.0-alpha.0",
-    "react-scripts-ts": "^2.16.0",
-    "rollup": "^0.62.0",
-    "rollup-plugin-babel": "^3.0.7",
+    "react-scripts-ts": "^3.1.0",
+    "rollup": "^0.66.6",
+    "rollup-plugin-babel": "^4.0.3",
     "rollup-plugin-commonjs": "^9.1.3",
     "rollup-plugin-node-resolve": "^3.3.0",
     "rollup-plugin-peer-deps-external": "^2.2.0",
-    "rollup-plugin-postcss-modules": "1.0.8",
-    "rollup-plugin-typescript2": "^0.13.0",
-    "rollup-plugin-url": "^1.4.0",
-    "typescript": "^2.8.3"
+    "rollup-plugin-typescript2": "^0.17.2",
+    "rollup-plugin-url": "^2.0.1",
+    "typescript": "^3.1.3"
   },
   "files": [
     "dist"
-  ]
+  ],
+  "dependencies": {
+    "@types/redux": "^3.6.0"
+  }
 }

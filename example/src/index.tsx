@@ -1,8 +1,7 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 
-import './index.css';
-import App from './App.react';
+import App from './App';
 import {Context, makeStore} from './Store';
 
 const store = makeStore();

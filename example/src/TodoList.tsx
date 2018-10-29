@@ -1,8 +1,8 @@
-import React from 'react';
-import {useMappedState} from './Store';
-import TodoItem from './TodoItem.react';
+import * as React from 'react';
+import {IState, useMappedState} from './Store';
+import TodoItem from './TodoItem';
 
-const mapState = state => ({
+const mapState = (state: IState) => ({
   lastUpdated: state.lastUpdated,
   todoCount: state.todos.length,
 });
@@ -13,7 +13,7 @@ export default function TodoList() {
     <div>
       <div>Count: {todoCount}</div>
       <ul>
-        {new Array(todoCount).fill().map((_, index) => (
+        {new Array(todoCount).fill(null).map((_, index) => (
           <TodoItem index={index} key={index} />
         ))}
       </ul>

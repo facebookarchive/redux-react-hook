@@ -1,6 +1,6 @@
-import React from 'react';
-import TodoInput from './TodoInput.react';
-import TodoList from './TodoList.react';
+import * as React from 'react';
+import TodoInput from './TodoInput';
+import TodoList from './TodoList';
 
 export default function App() {
   return (

@@ -27,7 +27,6 @@ Before you can use the hook, you must put your Redux store into `Context`:
 ```tsx
 // Store.js
 
-import React from 'react';
 import {createStore} from 'redux';
 import reducer from './reducer';
 
@@ -131,7 +130,6 @@ project specific wrappers for `useMappedState` and `useDispatch`:
 ```tsx
 // Store.js
 
-import React from 'react';
 import {
   useDispatch as useDispatchGeneric,
   useMappedState as useMappedStateGeneric,
