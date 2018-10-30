@@ -1,8 +1,10 @@
 # redux-react-hook
 
-> React hook for accessing mapped state from a Redux store. Basically a hooks version of `react-redux`.
+> React hook for accessing mapped state from a Redux store.
 
 [![NPM](https://img.shields.io/npm/v/redux-react-hook.svg)](https://www.npmjs.com/package/redux-react-hook)
+[![Bundle Size](https://badgen.net/bundlephobia/minzip/redux-react-hook)](https://bundlephobia.com/result?p=redux-react-hook)
+
 
 ## Install
 
@@ -179,6 +181,17 @@ You're not memoizing the `mapState` function. Either declare it outside of your
 stateless functional component or wrap it in `useCallback` to avoid creating a
 new function every render.
 
+## Alternatives
+
+Hooks are really new, and we are just beginning to see what people do with them. There is an [open issue on `react-redux`](https://github.com/reduxjs/react-redux/issues/1063) discussing the potential. Here are some other projects that are adding hooks for Redux:
+
+- [`use-substate`](https://github.com/philipp-spiess/use-substate)
+- [`react-use-redux`](https://github.com/martynaskadisa/react-use-redux)
+
+## Thanks
+
+Special thanks to @sawyerhood and @sophiebits for writing most of the hook!
+
 ## Contributing
 
 Contributions are definitely welcome! Check out the [issues](https://github.com/ianobermiller/redux-react-hook/issues)
@@ -186,4 +199,4 @@ for ideas on where you can contribute.
 
 ## License
 
-MIT © [ianobermiller](https://github.com/ianobermiller)
+MIT © Facebook Inc.
