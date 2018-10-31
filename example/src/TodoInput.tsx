@@ -1,3 +1,4 @@
+import {css} from 'emotion';
 import * as React from 'react';
 import {useDispatch} from './redux-react-hook';
 
@@ -7,6 +8,7 @@ export default function TodoInput() {
 
   return (
     <input
+      className={styles.root}
       type="text"
       onChange={e => setNewTodo(e.target.value)}
       onKeyDown={e => {
@@ -15,7 +17,18 @@ export default function TodoInput() {
           setNewTodo('');
         }
       }}
+      placeholder="What needs to be done?"
       value={newTodo}
     />
   );
 }
+
+const styles = {
+  root: css`
+    box-sizing: border-box;
+    font-size: 16px;
+    margin-bottom: 24px;
+    padding: 8px 12px;
+    width: 100%;
+  `,
+};

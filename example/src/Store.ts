@@ -19,6 +19,11 @@ export type Action =
 export function makeStore() {
   return createStore(reducer, {
     lastUpdated: 0,
-    todos: ['alpha', 'beta', 'gamma'],
+    todos: [
+      'Make the fire!',
+      'Fix the breakfast!',
+      'Wash the dishes!',
+      'Do the mopping!',
+    ],
   });
 }
