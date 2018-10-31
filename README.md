@@ -5,7 +5,6 @@
 [![NPM](https://img.shields.io/npm/v/redux-react-hook.svg)](https://www.npmjs.com/package/redux-react-hook)
 [![Bundle Size](https://badgen.net/bundlephobia/minzip/redux-react-hook)](https://bundlephobia.com/result?p=redux-react-hook)
 
-
 ## Install
 
 ```bash
@@ -24,7 +23,7 @@ your Redux store. See Custom Wrappers below to make this less cumbersome.
 
 ### Store in Context
 
-Before you can use the hook, you must put your Redux store into `Context`:
+Before you can use the hook, you must provide your Redux store via `StoreProvider`:
 
 ```tsx
 // Store.js
@@ -35,32 +34,31 @@ import reducer from './reducer';
 export function makeStore() {
   return createStore(reducer);
 }
-
-export const Context = React.createContext(null);
 ```
 
 ```tsx
 // index.js
 
-import {Context, makeStore} from './Store';
+import {StoreProvider} from 'redux-react-hook';
+import {makeStore} from './Store';
 
 const store = makeStore();
 
 ReactDOM.render(
-  <Context.Provider value={store}>
+  <StoreProvider value={store}>
     <App />
-  </Context.Provider>,
+  </StoreProvider>,
   document.getElementById('root'),
 );
 ```
 
-### `useMappedState(storeContext, mapState)`
+### `useMappedState(mapState)`
 
 Runs the given `mapState` function against your store state, just like
 `mapStateToProps`.
 
 ```tsx
-const state = useMappedState(storeContext, mapState);
+const state = useMappedState(mapState);
 ```
 
 If your `mapState` function doesn't use props or other component state,
@@ -68,7 +66,6 @@ declare it outside of your stateless functional component:
 
 ```tsx
 import {useMappedState} from 'redux-react-hook';
-import {Context} from './Store';
 
 // Note how mapState is declared outside of the function -- this is critical, as
 // useMappedState will infinitely recurse if you pass in a new mapState
@@ -94,13 +91,12 @@ memoize the function with `useCallback`:
 
 ```tsx
 import {useMappedState} from 'redux-react-hook';
-import {Context} from './Store';
 
 function TodoItem({index}) {
   // Note that we pass the index as a memoization parameter -- this causes
   // useCallback to return the same function every time unless index changes.
   const mapState = useCallback(state => state.todos[index], [index]);
-  const todo = useMappedState(storeContext, mapState);
+  const todo = useMappedState(mapState);
 
   return <li>{todo}</li>;
 }
@@ -112,7 +108,6 @@ Simply returns the dispatch method.
 
 ```tsx
 import {useMappedState} from 'redux-react-hook';
-import {Context} from './Store';
 
 function DeleteButton({index}) {
   const dispatch = useDispatch(Context);
@@ -124,51 +119,16 @@ function DeleteButton({index}) {
 }
 ```
 
-### Custom wrappers
-
-To avoid having to pass in a `storeContext` with every call, we recommend adding
-project specific wrappers for `useMappedState` and `useDispatch`:
-
-```tsx
-// Store.js
-
-import {
-  useDispatch as useDispatchGeneric,
-  useMappedState as useMappedStateGeneric,
-} from 'redux-react-hook';
-
-export const Context = React.createContext(null);
-
-export function useMappedState(mapState) {
-  return useMappedStateGeneric(Context, mapState);
-}
-
-export function useDispatch() {
-  return useDispatchGeneric(Context);
-}
-```
-
-The `useMappedState` wrapper is also an ideal place to restrict the store state
-that you want passed to `mapState`. For example, if your store schema has an
-undo stack, and you only want to pass the current state.
-
-```tsx
-export function useMappedState(mapState) {
-  const mapRestrictedState = useCallback(
-    fullState => mapState(fullState.currentState),
-    [mapState],
-  );
-  return useMappedStateGeneric(Context, mapRestrictedState);
-}
-```
-
-See the example project for the full code.
-
 ## Example
 
 To run the example project, a simple todo app:
 
 ```bash
+# In one terminal, run `yarn start` in the root to rebuild the library itself
+cd ./redux-react-example
+yarn start
+
+# In another terminal, run `yarn start` in the `example` folder
 cd example
 yarn start
 ```
@@ -190,7 +150,7 @@ Hooks are really new, and we are just beginning to see what people do with them.
 
 ## Thanks
 
-Special thanks to @sawyerhood and @sophiebits for writing most of the hook!
+Special thanks to @sawyerhood and @sophiebits for writing most of the hook! This repo was setup with the help of the excellent [`create-react-library`](https://www.npmjs.com/package/create-react-library).
 
 ## Contributing
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useDispatch} from './Store';
+import {useDispatch} from './redux-react-hook';
 
 export default function TodoInput() {
   const [newTodo, setNewTodo] = React.useState('');

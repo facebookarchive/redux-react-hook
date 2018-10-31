@@ -1,5 +1,6 @@
 import * as React from 'react';
-import {IState, useDispatch, useMappedState} from './Store';
+import {useDispatch, useMappedState} from './redux-react-hook';
+import {IState} from './Store';
 
 export default function TodoItem({index}: {index: number}) {
   const mapState = React.useCallback((state: IState) => state.todos[index], [

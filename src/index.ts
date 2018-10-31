@@ -1,6 +1,9 @@
-import {useContext, useEffect, useRef, useState} from 'react';
+import {createContext, useContext, useEffect, useRef, useState} from 'react';
 import {Action, Dispatch, Store} from 'redux';
 import shallowEqual from './shallowEqual';
+
+const Context: React.Context<Store<any> | null> = createContext(null);
+export const StoreProvider = Context.Provider;
 
 /**
  * Your passed in mapState function should be memoized to avoid
@@ -16,10 +19,14 @@ import shallowEqual from './shallowEqual';
  * const todo = useMappedState(mapState);
  */
 export function useMappedState<TState, TResult>(
-  storeContext: React.Context<Store<TState>>,
   mapState: (state: TState) => TResult,
 ): TResult {
-  const store = useContext(storeContext);
+  const store = useContext(Context);
+  if (!store) {
+    throw new Error(
+      'redux-react-hook requires your Redux store to be passed through context via the <StoreProvider>',
+    );
+  }
   const runMapState = () => mapState(store.getState());
 
   const [mappedState, setMappedState] = useState(() => runMapState());
@@ -71,9 +78,12 @@ export function useMappedState<TState, TResult>(
   return mappedState;
 }
 
-export function useDispatch<TAction extends Action>(
-  storeContext: React.Context<Store<any, TAction>>,
-): Dispatch<TAction> {
-  const store = useContext(storeContext);
+export function useDispatch<TAction extends Action>(): Dispatch<TAction> {
+  const store = useContext(Context);
+  if (!store) {
+    throw new Error(
+      'redux-react-hook requires your Redux store to be passed through context via the <StoreProvider>',
+    );
+  }
   return store.dispatch;
 }

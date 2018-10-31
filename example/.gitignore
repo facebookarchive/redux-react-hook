@@ -8,6 +8,7 @@
 
 # production
 /build
+/src/redux-react-hook
 
 # misc
 .DS_Store

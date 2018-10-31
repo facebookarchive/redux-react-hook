@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {Store} from 'redux';
-import {useMappedState} from '..';
+import {StoreProvider, useMappedState} from '..';
 
 interface IAction {
   type: 'add todo';
@@ -17,7 +17,6 @@ describe('redux-react-hook', () => {
   let state: IState;
   let cancelSubscription: () => void;
   let store: Store<IState, IAction>;
-  let context: React.Context<Store<IState>>;
   let reactRoot: HTMLDivElement;
 
   const createStore = (): Store<IState, IAction> => ({
@@ -35,7 +34,6 @@ describe('redux-react-hook', () => {
     cancelSubscription = jest.fn();
     state = {bar: 123, foo: 'bar'};
     store = createStore();
-    context = React.createContext(store);
 
     reactRoot = document.createElement('div');
     document.body.appendChild(reactRoot);
@@ -47,7 +45,7 @@ describe('redux-react-hook', () => {
 
   function render(element: React.ReactElement<any>) {
     ReactDOM.render(
-      <context.Provider value={store}>{element}</context.Provider>,
+      <StoreProvider value={store}>{element}</StoreProvider>,
       reactRoot,
     );
   }
@@ -59,7 +57,7 @@ describe('redux-react-hook', () => {
   it('renders with state from the store', () => {
     const mapState = (s: IState) => s.foo;
     const Component = () => {
-      const foo = useMappedState(context, mapState);
+      const foo = useMappedState(mapState);
       return <div>{foo}</div>;
     };
 
@@ -71,7 +69,7 @@ describe('redux-react-hook', () => {
   it('rerenders with new state when the subscribe callback is called', () => {
     const mapState = (s: IState) => s.foo;
     const Component = () => {
-      const foo = useMappedState(context, mapState);
+      const foo = useMappedState(mapState);
       return <div>{foo}</div>;
     };
 
@@ -87,7 +85,7 @@ describe('redux-react-hook', () => {
     const mapState = (s: IState) => s.foo;
     let renderCount = 0;
     const Component = () => {
-      const foo = useMappedState(context, mapState);
+      const foo = useMappedState(mapState);
       renderCount++;
       return (
         <div>
@@ -109,7 +107,7 @@ describe('redux-react-hook', () => {
   it('rerenders if the mapState function changes', () => {
     const Component = ({n}: {n: number}) => {
       const mapState = React.useCallback((s: IState) => s.foo + ' ' + n, [n]);
-      const foo = useMappedState(context, mapState);
+      const foo = useMappedState(mapState);
       return <div>{foo}</div>;
     };
 
@@ -125,7 +123,7 @@ describe('redux-react-hook', () => {
   it('rerenders if the store changes', () => {
     const mapState = (s: IState) => s.foo;
     const Component = () => {
-      const foo = useMappedState(context, mapState);
+      const foo = useMappedState(mapState);
       return <div>{foo}</div>;
     };
 

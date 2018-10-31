@@ -1,5 +1,6 @@
 import * as React from 'react';
-import {IState, useMappedState} from './Store';
+import {useMappedState} from './redux-react-hook';
+import {IState} from './Store';
 import TodoItem from './TodoItem';
 
 const mapState = (state: IState) => ({
