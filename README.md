@@ -26,23 +26,11 @@ In order to use the hooks, your Redux store must be in available in the React co
 Before you can use the hook, you must provide your Redux store via `StoreProvider`:
 
 ```tsx
-// Store.js
-
 import {createStore} from 'redux';
+import {StoreProvider} from 'redux-react-hook';
 import reducer from './reducer';
 
-export function makeStore() {
-  return createStore(reducer);
-}
-```
-
-```tsx
-// index.js
-
-import {StoreProvider} from 'redux-react-hook';
-import {makeStore} from './Store';
-
-const store = makeStore();
+const store = createStore(reducer);
 
 ReactDOM.render(
   <StoreProvider value={store}>
