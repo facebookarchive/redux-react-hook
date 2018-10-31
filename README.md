@@ -5,6 +5,22 @@
 [![NPM](https://img.shields.io/npm/v/redux-react-hook.svg)](https://www.npmjs.com/package/redux-react-hook)
 [![Bundle Size](https://badgen.net/bundlephobia/minzip/redux-react-hook@latest)](https://bundlephobia.com/result?p=redux-react-hook@latest)
 
+## Table of Contents
+
+- [redux-react-hook](#redux-react-hook)
+  - [Install](#install)
+  - [Usage](#usage)
+    - [Store in Context](#store-in-context)
+    - [`useMappedState(mapState)`](#-usemappedstate-mapstate--)
+    - [`useDispatch()`](#-usedispatch---)
+  - [Example](#example)
+  - [FAQ](#faq)
+  - [More info](#more-info)
+  - [Thanks](#thanks)
+  - [Contributing](#contributing)
+  - [Changelog](#changelog)
+  - [License](#license)
+
 ## Install
 
 ```bash
