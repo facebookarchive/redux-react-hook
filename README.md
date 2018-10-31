@@ -17,9 +17,9 @@ npm install --save redux-react-hook
 
 ## Usage
 
-All the hooks take a `storeContext` as the first parameter, which should be a
-context object, the value returned by `React.createContext(...)`, that contains
-your Redux store. See Custom Wrappers below to make this less cumbersome.
+NOTE: React hooks currently require `react` and `react-dom` version `16.7.0-alpha.0` or higher.
+
+In order to use the hooks, your Redux store must be in available in the React context from `StoreProvider`.
 
 ### Store in Context
 
@@ -76,7 +76,7 @@ const mapState = state => ({
 });
 
 export default function TodoSummary() {
-  const {lastUpdated, todoCount} = useMappedState(Context, mapState);
+  const {lastUpdated, todoCount} = useMappedState(mapState);
   return (
     <div>
       <div>Count: {todoCount}</div>
@@ -93,7 +93,7 @@ memoize the function with `useCallback`:
 import {useMappedState} from 'redux-react-hook';
 
 function TodoItem({index}) {
-  // Note that we pass the index as a memoization parameter -- this causes
+  // Note that we pass the index as a dependency parameter -- this causes
   // useCallback to return the same function every time unless index changes.
   const mapState = useCallback(state => state.todos[index], [index]);
   const todo = useMappedState(mapState);
@@ -102,7 +102,7 @@ function TodoItem({index}) {
 }
 ```
 
-### `useDispatch(storeContext)`
+### `useDispatch()`
 
 Simply returns the dispatch method.
 
@@ -110,7 +110,7 @@ Simply returns the dispatch method.
 import {useMappedState} from 'redux-react-hook';
 
 function DeleteButton({index}) {
-  const dispatch = useDispatch(Context);
+  const dispatch = useDispatch();
   const deleteTodo = useCallback(() => dispatch({type: 'delete todo', index}), [
     index,
   ]);
@@ -141,7 +141,7 @@ You're not memoizing the `mapState` function. Either declare it outside of your
 stateless functional component or wrap it in `useCallback` to avoid creating a
 new function every render.
 
-## Alternatives
+## More info
 
 Hooks are really new, and we are just beginning to see what people do with them. There is an [open issue on `react-redux`](https://github.com/reduxjs/react-redux/issues/1063) discussing the potential. Here are some other projects that are adding hooks for Redux:
 
@@ -156,6 +156,11 @@ Special thanks to @sawyerhood and @sophiebits for writing most of the hook! This
 
 Contributions are definitely welcome! Check out the [issues](https://github.com/ianobermiller/redux-react-hook/issues)
 for ideas on where you can contribute.
+
+## Changelog
+
+- v2.0.0 - Export `StoreProvider` instead of requiring you to pass in context
+- v1.0.0 - Initial release
 
 ## License
 

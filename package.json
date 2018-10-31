@@ -1,6 +1,6 @@
 {
   "name": "redux-react-hook",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "React hook for accessing a Redux store.",
   "author": "ianobermiller",
   "license": "MIT",
