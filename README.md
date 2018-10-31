@@ -3,7 +3,7 @@
 > React hook for accessing mapped state from a Redux store.
 
 [![NPM](https://img.shields.io/npm/v/redux-react-hook.svg)](https://www.npmjs.com/package/redux-react-hook)
-[![Bundle Size](https://badgen.net/bundlephobia/minzip/redux-react-hook)](https://bundlephobia.com/result?p=redux-react-hook)
+[![Bundle Size](https://badgen.net/bundlephobia/minzip/redux-react-hook@latest)](https://bundlephobia.com/result?p=redux-react-hook@latest)
 
 ## Install
 
