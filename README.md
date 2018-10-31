@@ -126,7 +126,9 @@ function DeleteButton({index}) {
 
 ## Example
 
-To run the example project, a simple todo app:
+You can try out `redux-react-hook` right in your browser with the [Codesandbox example](https://codesandbox.io/s/github/ianobermiller/redux-react-hook-example).
+
+To run the example project locally:
 
 ```bash
 # In one terminal, run `yarn start` in the root to rebuild the library itself
