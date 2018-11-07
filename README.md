@@ -8,19 +8,18 @@
 
 ## Table of Contents
 
-- [redux-react-hook](#redux-react-hook)
-  - [Install](#install)
-  - [Usage](#usage)
-    - [Store in Context](#store-in-context)
-    - [`useMappedState(mapState)`](#-usemappedstate-mapstate--)
-    - [`useDispatch()`](#-usedispatch---)
-  - [Example](#example)
-  - [FAQ](#faq)
-  - [More info](#more-info)
-  - [Thanks](#thanks)
-  - [Contributing](#contributing)
-  - [Changelog](#changelog)
-  - [License](#license)
+- [Install](#install)
+- [Usage](#usage)
+  - [Store in Context](#store-in-context)
+  - [`useMappedState(mapState)`](#-usemappedstate-mapstate--)
+  - [`useDispatch()`](#-usedispatch---)
+- [Example](#example)
+- [FAQ](#faq)
+- [More info](#more-info)
+- [Thanks](#thanks)
+- [Contributing](#contributing)
+- [Changelog](#changelog)
+- [License](#license)
 
 ## Install
 
