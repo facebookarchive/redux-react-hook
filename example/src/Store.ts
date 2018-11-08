@@ -1,3 +1,5 @@
+// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+
 import {Action, createStore} from 'redux';
 import reducer from './reducer';
 

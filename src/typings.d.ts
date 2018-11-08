@@ -1,3 +1,5 @@
+// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+
 // Add hooks to the react typings
 declare module 'react' {
   export function useCallback<T>(callback: T, dependencies: Array<any>): T;

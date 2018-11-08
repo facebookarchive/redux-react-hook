@@ -1,3 +1,5 @@
+// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+
 // From https://github.com/reduxjs/react-redux/blob/3e53ff96ed10f71c21346f08823e503df724db35/src/utils/shallowEqual.js
 
 const hasOwn = Object.prototype.hasOwnProperty;

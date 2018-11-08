@@ -1,3 +1,5 @@
+// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+
 import {Action, IState} from './Store';
 
 export default function reducer(state: IState, action: Action) {

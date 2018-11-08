@@ -1,3 +1,5 @@
+// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+
 import {css} from 'emotion';
 import * as React from 'react';
 import {useDispatch} from './redux-react-hook';
