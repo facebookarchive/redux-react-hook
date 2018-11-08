@@ -1,3 +1,5 @@
+// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {Store} from 'redux';
