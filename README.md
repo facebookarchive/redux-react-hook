@@ -90,15 +90,15 @@ export default function TodoSummary() {
 ```
 
 If you need to use props or other component state in your `mapState` function,
-memoize the function with `useCallback`:
+memoize the function with `useMemo`:
 
 ```tsx
 import {useMappedState} from 'redux-react-hook';
 
 function TodoItem({index}) {
   // Note that we pass the index as a dependency parameter -- this causes
-  // useCallback to return the same function every time unless index changes.
-  const mapState = useCallback(state => state.todos[index], [index]);
+  // useMemo to return the same function every time unless index changes.
+  const mapState = useMemo(() => state => state.todos[index], [index]);
   const todo = useMappedState(mapState);
 
   return <li>{todo}</li>;
@@ -143,7 +143,7 @@ yarn start
 ### How do I fix the error "Too many re-renders. React limits the number of renders to prevent an infinite loop."
 
 You're not memoizing the `mapState` function. Either declare it outside of your
-stateless functional component or wrap it in `useCallback` to avoid creating a
+stateless functional component or wrap it in `useMemo` to avoid creating a
 new function every render.
 
 ## More info
