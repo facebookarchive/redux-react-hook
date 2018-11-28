@@ -110,7 +110,7 @@ function TodoItem({index}) {
 Simply returns the dispatch method.
 
 ```tsx
-import {useMappedState} from 'redux-react-hook';
+import {useDispatch} from 'redux-react-hook';
 
 function DeleteButton({index}) {
   const dispatch = useDispatch();
