@@ -4,7 +4,7 @@ import {createContext, useContext, useEffect, useRef, useState} from 'react';
 import {Action, Dispatch, Store} from 'redux';
 import shallowEqual from './shallowEqual';
 
-const Context: React.Context<Store<any> | null> = createContext(null);
+export const Context: React.Context<Store<any> | null> = createContext(null);
 export const StoreProvider = Context.Provider;
 
 /**

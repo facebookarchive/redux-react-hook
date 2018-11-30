@@ -13,6 +13,7 @@
   - [Store in Context](#store-in-context)
   - [`useMappedState(mapState)`](#-usemappedstate-mapstate--)
   - [`useDispatch()`](#-usedispatch---)
+  - [Get store Context](#get-store-context)
 - [Example](#example)
 - [FAQ](#faq)
 - [More info](#more-info)
@@ -119,6 +120,61 @@ function DeleteButton({index}) {
   ]);
 
   return <button onClick={deleteTodo}>x</button>;
+}
+```
+
+### Get store Context
+
+If you need the store value from the context you can use following code:
+
+```tsx
+import {useContext} from 'react';
+import {Context} from 'redux-react-hook';
+
+function Component() {
+  const store = useContext(Context); // store passed to the StoreProvider
+  return null;
+}
+```
+
+#### Examples of usage store Context
+
+__Inject reducer to the store:__
+
+To inject reducer in runtime you can get current store value from the `Context`, create new root reducer and replace it using `store.replaceReducer` 
+
+```tsx
+import {useContext, useEffect} from 'react';
+import {Context} from 'redux-react-hook';
+import { combineReducers } from 'redux';
+
+import reducer from './reducer';
+
+function DemoPage() {
+  const store = useContext(Context); // Get store value from context
+  useEffect(() => {
+    store.injectedReducers['demo'] = reducer; // add new reducer to custom store field
+    store.replaceReducer(combineReducers(...rootReducers, ...store.injectedReducers)); // replace store reducer with a new one, combined with injectedReducers
+  });
+  return null;
+}
+```
+
+__Subscribe to store changes:__
+
+```tsx
+import {useContext, useEffect} from 'react';
+import {Context} from 'redux-react-hook';
+
+function DemoPage() {
+  const store = useContext(Context); // Get store value from context
+  useEffect(() => {
+    return store.subscribe(() => {
+      console.log(store.getState()) // current state of the store
+    })
+  })
+  
+  return null;
 }
 ```
 
