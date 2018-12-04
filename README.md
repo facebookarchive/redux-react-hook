@@ -10,10 +10,9 @@
 
 - [Install](#install)
 - [Usage](#usage)
-  - [Store in Context](#store-in-context)
-  - [`useMappedState(mapState)`](#-usemappedstate-mapstate--)
-  - [`useDispatch()`](#-usedispatch---)
-  - [Get store Context](#get-store-context)
+  - [`StoreContext`](#storecontext)
+  - [`useMappedState(mapState)`](#usemappedstatemapstate)
+  - [`useDispatch()`](#usedispatch)
 - [Example](#example)
 - [FAQ](#faq)
 - [More info](#more-info)
@@ -37,23 +36,39 @@ NOTE: React hooks currently require `react` and `react-dom` version `16.7.0-alph
 
 In order to use the hooks, your Redux store must be in available in the React context from `StoreProvider`.
 
-### Store in Context
+### `StoreContext`
 
-Before you can use the hook, you must provide your Redux store via `StoreProvider`:
+Before you can use the hook, you must provide your Redux store via `StoreContext.Provider`:
 
 ```tsx
 import {createStore} from 'redux';
-import {StoreProvider} from 'redux-react-hook';
+import {StoreContext} from 'redux-react-hook';
 import reducer from './reducer';
 
 const store = createStore(reducer);
 
 ReactDOM.render(
-  <StoreProvider value={store}>
+  <StoreContext.Provider value={store}>
     <App />
-  </StoreProvider>,
+  </StoreContext.Provider>,
   document.getElementById('root'),
 );
+```
+
+You can also use the `StoreContext` to access the store directly, which is useful for event handlers that only need more state when they are triggered:
+
+```tsx
+import {useContext} from 'react';
+import {StoreContext} from 'redux-react-hook';
+
+function Component() {
+  const store = useContext(StoreContext);
+  const onClick = useCallback(() => {
+    const value = selectExpensiveValue(store.getState());
+    alert('Value: ' + value);
+  });
+  return <div onClick={onClick} />;
+}
 ```
 
 ### `useMappedState(mapState)`
@@ -120,61 +135,6 @@ function DeleteButton({index}) {
   ]);
 
   return <button onClick={deleteTodo}>x</button>;
-}
-```
-
-### Get store Context
-
-If you need the store value from the context you can use following code:
-
-```tsx
-import {useContext} from 'react';
-import {Context} from 'redux-react-hook';
-
-function Component() {
-  const store = useContext(Context); // store passed to the StoreProvider
-  return null;
-}
-```
-
-#### Examples of usage store Context
-
-__Inject reducer to the store:__
-
-To inject reducer in runtime you can get current store value from the `Context`, create new root reducer and replace it using `store.replaceReducer` 
-
-```tsx
-import {useContext, useEffect} from 'react';
-import {Context} from 'redux-react-hook';
-import { combineReducers } from 'redux';
-
-import reducer from './reducer';
-
-function DemoPage() {
-  const store = useContext(Context); // Get store value from context
-  useEffect(() => {
-    store.injectedReducers['demo'] = reducer; // add new reducer to custom store field
-    store.replaceReducer(combineReducers(...rootReducers, ...store.injectedReducers)); // replace store reducer with a new one, combined with injectedReducers
-  });
-  return null;
-}
-```
-
-__Subscribe to store changes:__
-
-```tsx
-import {useContext, useEffect} from 'react';
-import {Context} from 'redux-react-hook';
-
-function DemoPage() {
-  const store = useContext(Context); // Get store value from context
-  useEffect(() => {
-    return store.subscribe(() => {
-      console.log(store.getState()) // current state of the store
-    })
-  })
-  
-  return null;
 }
 ```
 
