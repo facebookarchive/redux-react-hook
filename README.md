@@ -152,6 +152,7 @@ Hooks are really new, and we are just beginning to see what people do with them.
 
 - [`use-substate`](https://github.com/philipp-spiess/use-substate)
 - [`react-use-redux`](https://github.com/martynaskadisa/react-use-redux)
+- [`react-use-dux`](https://github.com/richardpj/react-use-dux)
 
 ## Thanks
 
