@@ -159,7 +159,7 @@ Special thanks to @sawyerhood and @sophiebits for writing most of the hook! This
 
 ## Contributing
 
-Contributions are definitely welcome! Check out the [issues](https://github.com/ianobermiller/redux-react-hook/issues)
+Contributions are definitely welcome! Check out the [issues](https://github.com/facebookincubator/redux-react-hook/issues)
 for ideas on where you can contribute. See the [CONTRIBUTING.md](CONTRIBUTING.md) file for more details.
 
 ## License
