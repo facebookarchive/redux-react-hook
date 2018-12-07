@@ -14,6 +14,12 @@ interface IState {
   foo: string;
 }
 
+// https://github.com/kentcdodds/react-testing-library/issues/215
+// useEffect is not triggered on re-renders
+beforeAll(() =>
+  jest.spyOn(React, 'useEffect').mockImplementation(React.useLayoutEffect));
+afterAll(() => (React.useEffect as any).mockRestore());
+
 describe('redux-react-hook', () => {
   let subscriberCallback: () => void;
   let state: IState;
@@ -24,10 +30,10 @@ describe('redux-react-hook', () => {
   const createStore = (): Store<IState, IAction> => ({
     dispatch: (action: any) => action,
     getState: () => state,
-    subscribe: (l: () => void) => {
+    subscribe: jest.fn((l: () => void) => {
       subscriberCallback = l;
       return cancelSubscription;
-    },
+    }),
     // tslint:disable-next-line:no-empty
     replaceReducer() {},
   });
@@ -81,6 +87,20 @@ describe('redux-react-hook', () => {
     subscriberCallback();
 
     expect(getText()).toBe('foo');
+  });
+
+  it('cancels subscription on unmount', () => {
+    const mapState = (s: IState) => s.foo;
+    const Component = () => {
+      const foo = useMappedState(mapState);
+      return <div>{foo}</div>;
+    };
+
+    render(<Component />);
+
+    ReactDOM.unmountComponentAtNode(reactRoot);
+
+    expect(cancelSubscription).toHaveBeenCalled();
   });
 
   it('does not rerender if the selected state has not changed', () => {
@@ -137,5 +157,21 @@ describe('redux-react-hook', () => {
     state = {...state, foo: 'hello'};
     render(<Component />);
     expect(getText()).toBe('hello');
+  });
+
+  it('calls the correct mapState if mapState changes and the store updates', () => {
+    const Component = ({n}: {n: number}) => {
+      const mapState = React.useCallback((s: IState) => s.foo + ' ' + n, [n]);
+      const foo = useMappedState(mapState);
+      return <div>{foo}</div>;
+    };
+
+    render(<Component n={100} />);
+    render(<Component n={45} />);
+
+    state = {...state, foo: 'foo'};
+    subscriberCallback();
+
+    expect(getText()).toBe('foo 45');
   });
 });

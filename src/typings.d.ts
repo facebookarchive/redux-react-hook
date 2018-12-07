@@ -8,6 +8,10 @@ declare module 'react' {
     didUpdate: () => (() => void) | void,
     dependencies?: Array<any>,
   ): void;
+  export function useLayoutEffect(
+    didUpdate: () => (() => void) | void,
+    dependencies?: Array<any>,
+  ): void;
   export function useRef<T>(initialValue?: T): {current: T};
   export function useState<T>(
     initialState: T | (() => T),
