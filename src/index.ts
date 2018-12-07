@@ -8,6 +8,10 @@ export const StoreContext: React.Context<Store<any> | null> = createContext(
   null,
 );
 
+const CONTEXT_ERROR_MESSAGE =
+  'redux-react-hook requires your Redux store to ' +
+  'be passed through context via the <StoreContext.Provider>';
+
 /**
  * Your passed in mapState function should be memoized to avoid
  * resubscribing every render. If you use other props in mapState, use
@@ -26,9 +30,7 @@ export function useMappedState<TState, TResult>(
 ): TResult {
   const store = useContext(StoreContext);
   if (!store) {
-    throw new Error(
-      'redux-react-hook requires your Redux store to be passed through context via the <StoreProvider>',
-    );
+    throw new Error(CONTEXT_ERROR_MESSAGE);
   }
   const runMapState = () => mapState(store.getState());
 
@@ -84,9 +86,7 @@ export function useMappedState<TState, TResult>(
 export function useDispatch<TAction extends Action>(): Dispatch<TAction> {
   const store = useContext(StoreContext);
   if (!store) {
-    throw new Error(
-      'redux-react-hook requires your Redux store to be passed through context via the <StoreProvider>',
-    );
+    throw new Error(CONTEXT_ERROR_MESSAGE);
   }
   return store.dispatch;
 }
