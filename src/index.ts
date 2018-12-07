@@ -4,9 +4,7 @@ import {createContext, useContext, useEffect, useRef, useState} from 'react';
 import {Action, Dispatch, Store} from 'redux';
 import shallowEqual from './shallowEqual';
 
-export const StoreContext: React.Context<Store<any> | null> = createContext(
-  null,
-);
+export const StoreContext = createContext<Store<any> | null>(null);
 
 const CONTEXT_ERROR_MESSAGE =
   'redux-react-hook requires your Redux store to ' +
@@ -49,7 +47,7 @@ export function useMappedState<TState, TResult>(
   // state. This way we can compare with the previous version to know if
   // the component should re-render. Otherwise, we'd have pass derivedState
   // in the array of memoization paramaters to the second useEffect below,
-  // which would cause it to unsubscribe and resubscribe from Redux everytime
+  // which would cause it to unsubscribe and resubscribe from Redux every time
   // the state changes.
   const lastRenderedDerivedState = useRef(derivedState);
   // Set the last mapped state after rendering.
