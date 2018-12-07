@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import {StoreProvider} from './redux-react-hook';
+import {StoreContext} from './redux-react-hook';
 
 import App from './App';
 import {makeStore} from './Store';
@@ -10,8 +10,8 @@ import {makeStore} from './Store';
 const store = makeStore();
 
 ReactDOM.render(
-  <StoreProvider value={store}>
+  <StoreContext.Provider value={store}>
     <App />
-  </StoreProvider>,
+  </StoreContext.Provider>,
   document.getElementById('root'),
 );

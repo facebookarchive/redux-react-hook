@@ -10,9 +10,9 @@
 
 - [Install](#install)
 - [Usage](#usage)
-  - [Store in Context](#store-in-context)
-  - [`useMappedState(mapState)`](#-usemappedstate-mapstate--)
-  - [`useDispatch()`](#-usedispatch---)
+  - [`StoreContext`](#storecontext)
+  - [`useMappedState(mapState)`](#usemappedstatemapstate)
+  - [`useDispatch()`](#usedispatch)
 - [Example](#example)
 - [FAQ](#faq)
 - [More info](#more-info)
@@ -36,23 +36,39 @@ NOTE: React hooks currently require `react` and `react-dom` version `16.7.0-alph
 
 In order to use the hooks, your Redux store must be in available in the React context from `StoreProvider`.
 
-### Store in Context
+### `StoreContext`
 
-Before you can use the hook, you must provide your Redux store via `StoreProvider`:
+Before you can use the hook, you must provide your Redux store via `StoreContext.Provider`:
 
 ```tsx
 import {createStore} from 'redux';
-import {StoreProvider} from 'redux-react-hook';
+import {StoreContext} from 'redux-react-hook';
 import reducer from './reducer';
 
 const store = createStore(reducer);
 
 ReactDOM.render(
-  <StoreProvider value={store}>
+  <StoreContext.Provider value={store}>
     <App />
-  </StoreProvider>,
+  </StoreContext.Provider>,
   document.getElementById('root'),
 );
+```
+
+You can also use the `StoreContext` to access the store directly, which is useful for event handlers that only need more state when they are triggered:
+
+```tsx
+import {useContext} from 'react';
+import {StoreContext} from 'redux-react-hook';
+
+function Component() {
+  const store = useContext(StoreContext);
+  const onClick = useCallback(() => {
+    const value = selectExpensiveValue(store.getState());
+    alert('Value: ' + value);
+  });
+  return <div onClick={onClick} />;
+}
 ```
 
 ### `useMappedState(mapState)`

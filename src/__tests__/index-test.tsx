@@ -3,7 +3,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {Store} from 'redux';
-import {StoreProvider, useMappedState} from '..';
+import {StoreContext, useMappedState} from '..';
 
 interface IAction {
   type: 'add todo';
@@ -47,7 +47,7 @@ describe('redux-react-hook', () => {
 
   function render(element: React.ReactElement<any>) {
     ReactDOM.render(
-      <StoreProvider value={store}>{element}</StoreProvider>,
+      <StoreContext.Provider value={store}>{element}</StoreContext.Provider>,
       reactRoot,
     );
   }
