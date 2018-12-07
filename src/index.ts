@@ -51,7 +51,7 @@ export function useMappedState<TState, TResult>(
   // in the array of memoization paramaters to the second useEffect below,
   // which would cause it to unsubscribe and resubscribe from Redux everytime
   // the state changes.
-  const lastRenderedDerivedState = useRef();
+  const lastRenderedDerivedState = useRef(derivedState);
   // Set the last mapped state after rendering.
   useEffect(() => {
     lastRenderedDerivedState.current = derivedState;

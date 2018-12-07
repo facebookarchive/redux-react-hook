@@ -17,7 +17,8 @@ interface IState {
 // https://github.com/kentcdodds/react-testing-library/issues/215
 // useEffect is not triggered on re-renders
 beforeAll(() =>
-  jest.spyOn(React, 'useEffect').mockImplementation(React.useLayoutEffect));
+  jest.spyOn(React, 'useEffect').mockImplementation(React.useLayoutEffect),
+);
 afterAll(() => (React.useEffect as any).mockRestore());
 
 describe('redux-react-hook', () => {

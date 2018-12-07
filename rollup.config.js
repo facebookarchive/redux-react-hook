@@ -36,7 +36,6 @@ export default {
     }),
     commonjs(),
     copy([
-      {files: ['src/typings.d.ts'], dest: 'dist/src'},
       // The example uses create-react-app (via create-react-library), which
       // doesn't work correctly with yarn or npm links. It will end up with
       // two versions of React in the build, which breaks hooks in particular
