@@ -14,13 +14,6 @@ interface IState {
   foo: string;
 }
 
-// https://github.com/kentcdodds/react-testing-library/issues/215
-// useEffect is not triggered on re-renders
-beforeAll(() =>
-  jest.spyOn(React, 'useEffect').mockImplementation(React.useLayoutEffect),
-);
-afterAll(() => (React.useEffect as any).mockRestore());
-
 describe('redux-react-hook', () => {
   let subscriberCallback: () => void;
   let state: IState;
@@ -170,9 +163,16 @@ describe('redux-react-hook', () => {
     render(<Component n={100} />);
     render(<Component n={45} />);
 
+    flushEffects();
+
     state = {...state, foo: 'foo'};
     subscriberCallback();
 
     expect(getText()).toBe('foo 45');
   });
 });
+
+// https://github.com/kentcdodds/react-testing-library/commit/11a41ce3ad9e9695f4b1662a5c67b890fc304894
+function flushEffects() {
+  ReactDOM.render(<div />, document.createElement('div'));
+}
