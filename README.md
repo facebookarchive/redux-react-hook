@@ -1,6 +1,6 @@
 # redux-react-hook
 
-> React hook for accessing mapped state from a Redux store.
+> React hook for accessing mapped state and dispatch from a Redux store.
 
 [![Build Status](https://travis-ci.com/facebookincubator/redux-react-hook.svg?branch=master)](https://travis-ci.com/facebookincubator/redux-react-hook)
 [![NPM](https://img.shields.io/npm/v/redux-react-hook.svg)](https://www.npmjs.com/package/redux-react-hook)
@@ -9,6 +9,7 @@
 ## Table of Contents
 
 - [Install](#install)
+- [Quick Start](#quick-start)
 - [Usage](#usage)
   - [`StoreContext`](#storecontext)
   - [`useMappedState(mapState)`](#usemappedstatemapstate)
@@ -30,11 +31,63 @@ yarn add redux-react-hook
 npm install --save redux-react-hook
 ```
 
+## Quick Start
+
+```tsx
+//
+// Bootstrap your app
+//
+import {StoreContext} from 'redux-react-hook';
+
+ReactDOM.render(
+  <StoreContext.Provider value={store}>
+    <App />
+  </StoreContext.Provider>,
+  document.getElementById('root'),
+);
+```
+
+```tsx
+//
+// Individual components
+//
+import {useDispatch, useMappedState} from 'redux-react-hook';
+
+export function DeleteButton({index}) {
+  // Declare your memoized mapState function
+  const mapState = useCallback(
+    state => ({
+      canDelete: state.todos[index].canDelete,
+      name: state.todos[index].name,
+    }),
+    [index],
+  );
+
+  // Get data from and subscribe to the store
+  const {canDelete, name} = useMappedState(mapState);
+
+  // Create actions
+  const dispatch = useDispatch();
+  const deleteTodo = useCallback(
+    () =>
+      dispatch({
+        type: 'delete todo',
+        index,
+      }),
+    [index],
+  );
+
+  return (
+    <button disabled={!canDelete} onClick={deleteTodo}>
+      Delete {name}
+    </button>
+  );
+}
+```
+
 ## Usage
 
 NOTE: React hooks currently require `react` and `react-dom` version `16.7.0-alpha.0` or higher.
-
-In order to use the hooks, your Redux store must be in available in the React context from `StoreProvider`.
 
 ### `StoreContext`
 
@@ -121,6 +174,8 @@ function TodoItem({index}) {
 }
 ```
 
+NOTE: You should only call `useMappedState` once per component, in the same way that you'd use `connect` from `react-redux` only once per component. Otherwise the component will have multiple store subscriptions and could rerender multiple times from a single store update.
+
 ### `useDispatch()`
 
 Simply returns the dispatch method.
@@ -156,6 +211,10 @@ yarn start
 
 ## FAQ
 
+### How does this compare to React Redux?
+
+`redux-react-hook` has not been battle and perf-tested, so we don't recommend replacing [`react-redux`](https://github.com/reduxjs/react-redux) just yet. React Redux also guarantees that [data flows top down](https://medium.com/@kj_huang/implementation-of-react-redux-part-2-633441bd3306), so that child components update after their parents, which the hook does not.
+
 ### How do I fix the error "Too many re-renders. React limits the number of renders to prevent an infinite loop."
 
 You're not memoizing the `mapState` function. Either declare it outside of your
@@ -172,7 +231,7 @@ Hooks are really new, and we are just beginning to see what people do with them.
 
 ## Thanks
 
-Special thanks to @sawyerhood and @sophiebits for writing most of the hook! This repo was setup with the help of the excellent [`create-react-library`](https://www.npmjs.com/package/create-react-library).
+Special thanks to @sawyerhood and @sophiebits for writing most of the initial implementation! This repo was setup with the help of the excellent [`create-react-library`](https://www.npmjs.com/package/create-react-library).
 
 ## Contributing
 
