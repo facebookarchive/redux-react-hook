@@ -34,7 +34,7 @@ export function useMappedState<TState, TResult>(
   }
   const runMapState = () => mapState(store.getState());
 
-  const [mappedState, setMappedState] = useState(() => runMapState());
+  const [derivedState, setDerivedState] = useState(() => runMapState());
 
   // If the store or mapState change, rerun mapState
   const [prevStore, setPrevStore] = useState(store);
@@ -42,19 +42,19 @@ export function useMappedState<TState, TResult>(
   if (prevStore !== store || prevMapState !== mapState) {
     setPrevStore(store);
     setPrevMapState(() => mapState);
-    setMappedState(runMapState());
+    setDerivedState(runMapState());
   }
 
   // We use a ref to store the last result of mapState in local component
   // state. This way we can compare with the previous version to know if
-  // the component should re-render. Otherwise, we'd have pass mappedState
+  // the component should re-render. Otherwise, we'd have pass derivedState
   // in the array of memoization paramaters to the second useEffect below,
   // which would cause it to unsubscribe and resubscribe from Redux everytime
   // the state changes.
-  const lastRenderedMappedState = useRef();
+  const lastRenderedDerivedState = useRef();
   // Set the last mapped state after rendering.
   useEffect(() => {
-    lastRenderedMappedState.current = mappedState;
+    lastRenderedDerivedState.current = derivedState;
   });
 
   useEffect(
@@ -62,9 +62,9 @@ export function useMappedState<TState, TResult>(
       // Run the mapState callback and if the result has changed, make the
       // component re-render with the new state.
       const checkForUpdates = () => {
-        const newMappedState = runMapState();
-        if (!shallowEqual(newMappedState, lastRenderedMappedState.current)) {
-          setMappedState(newMappedState);
+        const newDerivedState = runMapState();
+        if (!shallowEqual(newDerivedState, lastRenderedDerivedState.current)) {
+          setDerivedState(newDerivedState);
         }
       };
 
@@ -80,7 +80,8 @@ export function useMappedState<TState, TResult>(
     },
     [store, mapState],
   );
-  return mappedState;
+
+  return derivedState;
 }
 
 export function useDispatch<TAction extends Action>(): Dispatch<TAction> {
