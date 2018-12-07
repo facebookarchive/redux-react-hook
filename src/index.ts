@@ -34,12 +34,18 @@ export function useMappedState<TState, TResult>(
 
   const [derivedState, setDerivedState] = useState(() => runMapState());
 
-  // If the store or mapState change, rerun mapState
+  // If the store changes, resubscribe and rerun mapState
   const [prevStore, setPrevStore] = useState(store);
-  const [prevMapState, setPrevMapState] = useState(() => mapState);
-  if (prevStore !== store || prevMapState !== mapState) {
+  if (prevStore !== store) {
     setPrevStore(store);
-    setPrevMapState(() => mapState);
+    setDerivedState(runMapState());
+  }
+
+  // If mapState changes, rerun mapState. Put mapState into a ref so that the
+  // store doesn't need to resubscribe if mapState changes.
+  const mapStateRef = useRef(mapState);
+  if (mapStateRef.current !== mapState) {
+    mapStateRef.current = mapState;
     setDerivedState(runMapState());
   }
 
@@ -60,7 +66,9 @@ export function useMappedState<TState, TResult>(
       // Run the mapState callback and if the result has changed, make the
       // component re-render with the new state.
       const checkForUpdates = () => {
-        const newDerivedState = runMapState();
+        // Access mapState via the mutable ref so that we automatically get
+        // updates without resubscribing.
+        const newDerivedState = mapStateRef.current(store.getState());
         if (!shallowEqual(newDerivedState, lastRenderedDerivedState.current)) {
           setDerivedState(newDerivedState);
         }
@@ -76,7 +84,7 @@ export function useMappedState<TState, TResult>(
       // we use it to unsubscribe from the store.
       return unsubscribe;
     },
-    [store, mapState],
+    [store],
   );
 
   return derivedState;

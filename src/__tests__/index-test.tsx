@@ -143,7 +143,7 @@ describe('redux-react-hook', () => {
     expect(getText()).toBe('bar 45');
   });
 
-  it('rerenders if the store changes', () => {
+  it('rerenders if the store instance changes', () => {
     const mapState = (s: IState) => s.foo;
     const Component = () => {
       const foo = useMappedState(mapState);
@@ -174,5 +174,18 @@ describe('redux-react-hook', () => {
     subscriberCallback();
 
     expect(getText()).toBe('foo 45');
+  });
+
+  it("mapState updates don't cause the store to resubscribe", () => {
+    const Component = ({n}: {n: number}) => {
+      const mapState = React.useCallback((s: IState) => s.foo + ' ' + n, [n]);
+      const foo = useMappedState(mapState);
+      return <div>{foo}</div>;
+    };
+
+    render(<Component n={100} />);
+    render(<Component n={45} />);
+
+    expect(store.subscribe).toHaveBeenCalledTimes(1);
   });
 });
