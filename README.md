@@ -133,33 +133,7 @@ Runs the given `mapState` function against your store state, just like
 const state = useMappedState(mapState);
 ```
 
-If your `mapState` function doesn't use props or other component state,
-declare it outside of your stateless functional component:
-
-```tsx
-import {useMappedState} from 'redux-react-hook';
-
-// Note how mapState is declared outside of the function -- this is critical, as
-// useMappedState will infinitely recurse if you pass in a new mapState
-// function every time.
-const mapState = state => ({
-  lastUpdated: state.lastUpdated,
-  todoCount: state.todos.length,
-});
-
-export default function TodoSummary() {
-  const {lastUpdated, todoCount} = useMappedState(mapState);
-  return (
-    <div>
-      <div>Count: {todoCount}</div>
-      <div>Last updated: {new Date(lastUpdated).toString()}</div>
-    </div>
-  );
-}
-```
-
-If you need to use props or other component state in your `mapState` function,
-memoize the function with `useCallback`:
+You can use props or other component state in your `mapState` function. It must be memoized with `useCallback`, because `useMappedState` will infinitely recurse if you pass in a new mapState function every time.
 
 ```tsx
 import {useMappedState} from 'redux-react-hook';
@@ -173,6 +147,8 @@ function TodoItem({index}) {
   return <li>{todo}</li>;
 }
 ```
+
+If you don't have any inputs (the second argument to `useCallback`) pass an empty array `[]` so React uses the same function instance each render. You could also declare `mapState` outside of the function, but the React team does not recommend it, since the whole point of hooks is to allow you to keep everything in the component.
 
 NOTE: You should only call `useMappedState` once per component, in the same way that you'd use `connect` from `react-redux` only once per component. Otherwise the component will have multiple store subscriptions and could rerender multiple times from a single store update.
 
