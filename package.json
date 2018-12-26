@@ -2,9 +2,13 @@
   "name": "redux-react-hook",
   "version": "3.0.0",
   "description": "React hook for accessing a Redux store.",
-  "author": "ianobermiller",
+  "author": {
+    "name": "Ian Obermiller",
+    "email": "ian@obermillers.com",
+    "url": "https://ianobermiller.com/"
+  },
   "license": "MIT",
-  "repository": "ianobermiller/redux-react-hook",
+  "repository": "https://github.com/facebookincubator/redux-react-hook.git",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "jsnext:main": "dist/index.es.js",
