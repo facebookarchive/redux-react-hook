@@ -1,8 +1,8 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
-import {Action, IState} from './Store';
+import {Action, IState, INITIAL_STATE} from './Store';
 
-export default function reducer(state: IState, action: Action) {
+export default function reducer(state: IState = INITIAL_STATE, action: Action) {
   switch (action.type) {
     case 'add todo': {
       return {

@@ -23,5 +23,11 @@
     "@types/react": "^16.7.13",
     "@types/react-dom": "^16.0.11",
     "typescript": "^3.2.2"
-  }
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

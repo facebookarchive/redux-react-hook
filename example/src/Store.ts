@@ -1,6 +1,6 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
-import {Action, createStore} from 'redux';
+import {Action, createStore, Store} from 'redux';
 import reducer from './reducer';
 
 export interface IState {
@@ -18,14 +18,16 @@ export type Action =
       index: number;
     };
 
-export function makeStore() {
-  return createStore(reducer, {
-    lastUpdated: 0,
-    todos: [
-      'Make the fire!',
-      'Fix the breakfast!',
-      'Wash the dishes!',
-      'Do the mopping!',
-    ],
-  });
+export function makeStore(): Store<IState, Action> {
+  return createStore(reducer, INITIAL_STATE);
 }
+
+export const INITIAL_STATE: IState = {
+  lastUpdated: 0,
+  todos: [
+    'Make the fire!',
+    'Fix the breakfast!',
+    'Wash the dishes!',
+    'Do the mopping!',
+  ],
+};
