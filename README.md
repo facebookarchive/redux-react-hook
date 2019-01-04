@@ -150,7 +150,7 @@ function TodoItem({index}) {
 
 If you don't have any inputs (the second argument to `useCallback`) pass an empty array `[]` so React uses the same function instance each render. You could also declare `mapState` outside of the function, but the React team does not recommend it, since the whole point of hooks is to allow you to keep everything in the component.
 
-NOTE: You should only call `useMappedState` once per component, in the same way that you'd use `connect` from `react-redux` only once per component. Otherwise the component will have multiple store subscriptions and could rerender multiple times from a single store update.
+NOTE: Every call to `useMappedState` will subscribe to the store. If the store updates, though, your component will only re-render once. So, calling `useMappedState` more than once (for example encapsulated inside a custom hook) should not have a large performance impact. If your measurements show a performance impact, you can switch to returning an object instead.
 
 ### `useDispatch()`
 
