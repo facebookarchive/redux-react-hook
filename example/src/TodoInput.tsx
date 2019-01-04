@@ -1,11 +1,11 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
 import {css} from 'emotion';
-import * as React from 'react';
+import React, {useState} from 'react';
 import {useDispatch} from './redux-react-hook';
 
 export default function TodoInput() {
-  const [newTodo, setNewTodo] = React.useState('');
+  const [newTodo, setNewTodo] = useState('');
   const dispatch = useDispatch();
 
   return (

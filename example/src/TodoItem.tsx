@@ -1,21 +1,12 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
 import {css} from 'emotion';
-import * as React from 'react';
+import React, {useCallback} from 'react';
 import {useDispatch, useMappedState} from './redux-react-hook';
 import {IState} from './Store';
 
 export default function TodoItem({index}: {index: number}) {
-  const mapState = React.useCallback((state: IState) => state.todos[index], [
-    index,
-  ]);
-  const todo = useMappedState(mapState);
-
-  const dispatch = useDispatch();
-  const deleteTodo = React.useCallback(
-    () => dispatch({type: 'delete todo', index}),
-    [index],
-  );
+  const {todo, deleteTodo} = useTodo(index);
 
   return (
     <li className={styles.root}>
@@ -23,6 +14,19 @@ export default function TodoItem({index}: {index: number}) {
       <button onClick={deleteTodo}>Delete</button>
     </li>
   );
+}
+
+// Example of creating a custom hook to encapsulate the store
+function useTodo(index: number): {todo: string; deleteTodo: () => void} {
+  const todo = useMappedState(
+    useCallback((state: IState) => state.todos[index], [index]),
+  );
+
+  const dispatch = useDispatch();
+  const deleteTodo = useCallback(() => dispatch({type: 'delete todo', index}), [
+    index,
+  ]);
+  return {todo, deleteTodo};
 }
 
 const styles = {

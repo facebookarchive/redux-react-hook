@@ -1,18 +1,21 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
 import {css} from 'emotion';
-import * as React from 'react';
+import React, {useCallback} from 'react';
 import {useMappedState} from './redux-react-hook';
 import {IState} from './Store';
 import TodoItem from './TodoItem';
 
-const mapState = (state: IState) => ({
-  lastUpdated: state.lastUpdated,
-  todoCount: state.todos.length,
-});
-
 export default function TodoList() {
-  const {lastUpdated, todoCount} = useMappedState(mapState);
+  const {lastUpdated, todoCount} = useMappedState(
+    useCallback(
+      (state: IState) => ({
+        lastUpdated: state.lastUpdated,
+        todoCount: state.todos.length,
+      }),
+      [],
+    ),
+  );
   return (
     <div>
       <div className={styles.count}>You have {todoCount} todos</div>
