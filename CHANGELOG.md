@@ -1,5 +1,12 @@
 # Changelog for redux-react-hook
 
+## v3.0.2
+
+Jan 20, 2019
+
+- Add types field to package.json (thanks @Mrtenz!)
+- Docs update to not condemn multiple useMappedState calls
+
 ## v3.0.1
 
 Dec 26, 2018
