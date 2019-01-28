@@ -1,5 +1,11 @@
 # Changelog for redux-react-hook
 
+## v3.0.3
+
+Jan 28, 2019
+
+- Move react-scripts and @types/node to devDependencies (thanks @stevenla)
+
 ## v3.0.2
 
 Jan 20, 2019
