@@ -74,7 +74,8 @@ export function useMappedState<TState, TResult>(
         }
       };
 
-      // Pull data from the store on first render.
+      // Pull data from the store after first render in case the store has
+      // changed since we began.
       checkForUpdates();
 
       // Subscribe to the store to be notified of subsequent changes.

@@ -4,6 +4,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {Store} from 'redux';
 import {StoreContext, useMappedState} from '..';
+import {isatty} from 'tty';
 
 interface IAction {
   type: 'add todo';
@@ -169,6 +170,32 @@ describe('redux-react-hook', () => {
     subscriberCallback();
 
     expect(getText()).toBe('foo 45');
+  });
+
+  it("doesn't try to update after unmounting during dispatch", () => {
+    let mapStateCalls = 0;
+    const Component = () => {
+      const mapState = React.useCallback((s: IState) => {
+        mapStateCalls++;
+        return s.foo;
+      }, []);
+      const foo = useMappedState(mapState);
+      return <div>{foo}</div>;
+    };
+
+    render(<Component />);
+
+    flushEffects();
+
+    ReactDOM.unmountComponentAtNode(reactRoot);
+
+    const consoleErrorSpy = jest.spyOn(console, 'error');
+    state = {...state, foo: 'foo'};
+    subscriberCallback();
+
+    // mapState is called during and after the first render
+    expect(mapStateCalls).toBe(2);
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
 });
 
