@@ -170,6 +170,32 @@ describe('redux-react-hook', () => {
 
     expect(getText()).toBe('foo 45');
   });
+
+  it("doesn't try to update after unmounting during dispatch", () => {
+    let mapStateCalls = 0;
+    const Component = () => {
+      const mapState = React.useCallback((s: IState) => {
+        mapStateCalls++;
+        return s.foo;
+      }, []);
+      const foo = useMappedState(mapState);
+      return <div>{foo}</div>;
+    };
+
+    render(<Component />);
+
+    flushEffects();
+
+    ReactDOM.unmountComponentAtNode(reactRoot);
+
+    const consoleErrorSpy = jest.spyOn(console, 'error');
+    state = {...state, foo: 'foo'};
+    subscriberCallback();
+
+    // mapState is called during and after the first render
+    expect(mapStateCalls).toBe(2);
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+  });
 });
 
 // https://github.com/kentcdodds/react-testing-library/commit/11a41ce3ad9e9695f4b1662a5c67b890fc304894
