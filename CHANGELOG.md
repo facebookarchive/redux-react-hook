@@ -1,5 +1,11 @@
 # Changelog for redux-react-hook
 
+## v3.0.4
+
+Feb 1, 2019
+
+- Bug fix: don't set state after unsubscribing from Redux (thanks @gaearon!)
+
 ## v3.0.3
 
 Jan 28, 2019
