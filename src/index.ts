@@ -57,9 +57,17 @@ export function useMappedState<TState, TResult>(
 
   useEffect(
     () => {
+      let didUnsubscribe = false;
+
       // Run the mapState callback and if the result has changed, make the
       // component re-render with the new state.
       const checkForUpdates = () => {
+        if (didUnsubscribe) {
+          // Don't run stale listeners.
+          // Redux doesn't guarantee unsubscriptions happen until next dispatch.
+          return;
+        }
+
         const newDerivedState = runMapState();
         if (!shallowEqual(newDerivedState, lastRenderedDerivedState.current)) {
           setDerivedState(newDerivedState);
@@ -74,7 +82,10 @@ export function useMappedState<TState, TResult>(
 
       // The return value of useEffect will be called when unmounting, so
       // we use it to unsubscribe from the store.
-      return unsubscribe;
+      return () => {
+        didUnsubscribe = true;
+        unsubscribe();
+      };
     },
     [store, mapState],
   );
