@@ -11,17 +11,15 @@ const CONTEXT_ERROR_MESSAGE =
   'be passed through context via the <StoreContext.Provider>';
 
 /**
- * Your passed in mapState function should be memoized to avoid
- * resubscribing every render. If you use other props in mapState, use
- * useCallback to memoize the resulting function, otherwise define the mapState
- * function outside of the component:
+ * Your passed in mapState function should be memoized with useCallback to avoid
+ * resubscribing every render. If you don't use other props in mapState, pass
+ * an empty array [] as the dependency list so the callback isn't recreated
+ * every render.
  *
- * const mapState = useCallback(
+ * const todo = useMappedState(useCallback(
  *   state => state.todos.get(id),
- *   // The second parameter to useCallback tells you
  *   [id],
- * );
- * const todo = useMappedState(mapState);
+ * ));
  */
 export function useMappedState<TState, TResult>(
   mapState: (state: TState) => TResult,
