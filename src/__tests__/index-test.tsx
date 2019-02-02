@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import {Store} from 'redux';
+import {Store, createStore as createReduxStore} from 'redux';
 import {StoreContext, useMappedState} from '..';
 
 interface IAction {
@@ -213,6 +213,38 @@ describe('redux-react-hook', () => {
     // mapState is called during and after the first render
     expect(mapStateCalls).toBe(2);
     expect(consoleErrorSpy).not.toHaveBeenCalled();
+  });
+
+  it('renders last state after synchronous dispatches', () => {
+    const store = createReduxStore(
+      (state: number = 0, action: any): number =>
+        action.type === 'test' ? action.payload : state,
+    );
+
+    const mapState = (s: number) => s;
+    const Component = () => {
+      const bar = useMappedState(mapState);
+      return <div>{bar}</div>;
+    };
+
+    render(
+      <StoreContext.Provider value={store}>
+        <Component />
+      </StoreContext.Provider>,
+    );
+
+    flushEffects();
+
+    store.dispatch({
+      type: 'test',
+      payload: 1,
+    });
+    store.dispatch({
+      type: 'test',
+      payload: 0,
+    });
+
+    expect(getText()).toBe('0');
   });
 });
 

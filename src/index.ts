@@ -28,30 +28,34 @@ export function useMappedState<TState, TResult>(
   if (!store) {
     throw new Error(CONTEXT_ERROR_MESSAGE);
   }
+  const mapStateFactory = () => mapState;
   const runMapState = () => mapState(store.getState());
 
-  const [derivedState, setDerivedState] = useState(() => runMapState());
+  const [derivedState, setDerivedState] = useState(runMapState);
 
   // If the store or mapState change, rerun mapState
   const [prevStore, setPrevStore] = useState(store);
-  const [prevMapState, setPrevMapState] = useState(() => mapState);
+  const [prevMapState, setPrevMapState] = useState(mapStateFactory);
+
+  // We keep lastDerivedState in a ref and update it imperatively
+  // after calling setDerivedState so it's always up-to-date.
+  // We can't update it in useEffect because state might be updated
+  // synchronously multiple times before render occurs.
+  const lastDerivedState = useRef(derivedState);
+
+  const wrappedSetDerivedState = () => {
+    const newDerivedState = runMapState();
+    if (!shallowEqual(newDerivedState, lastDerivedState.current)) {
+      setDerivedState(newDerivedState);
+      lastDerivedState.current = newDerivedState;
+    }
+  };
+
   if (prevStore !== store || prevMapState !== mapState) {
     setPrevStore(store);
-    setPrevMapState(() => mapState);
-    setDerivedState(runMapState());
+    setPrevMapState(mapStateFactory);
+    wrappedSetDerivedState();
   }
-
-  // We use a ref to store the last result of mapState in local component
-  // state. This way we can compare with the previous version to know if
-  // the component should re-render. Otherwise, we'd have pass derivedState
-  // in the array of memoization paramaters to the second useEffect below,
-  // which would cause it to unsubscribe and resubscribe from Redux every time
-  // the state changes.
-  const lastRenderedDerivedState = useRef(derivedState);
-  // Set the last mapped state after rendering.
-  useEffect(() => {
-    lastRenderedDerivedState.current = derivedState;
-  });
 
   useEffect(
     () => {
@@ -66,10 +70,7 @@ export function useMappedState<TState, TResult>(
           return;
         }
 
-        const newDerivedState = runMapState();
-        if (!shallowEqual(newDerivedState, lastRenderedDerivedState.current)) {
-          setDerivedState(newDerivedState);
-        }
+        wrappedSetDerivedState();
       };
 
       // Pull data from the store after first render in case the store has
