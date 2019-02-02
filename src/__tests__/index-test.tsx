@@ -153,6 +153,24 @@ describe('redux-react-hook', () => {
     expect(getText()).toBe('hello');
   });
 
+  it('uses the latest state if the store updates before subscribing', () => {
+    const Component = () => {
+      const mapState = React.useCallback((s: IState) => s.foo, []);
+      const foo = useMappedState(mapState);
+      return <div>{foo}</div>;
+    };
+
+    render(<Component />);
+
+    state = {...state, foo: 'foo'};
+    subscriberCallback();
+
+    // run the useEffect that subscribes to the store
+    flushEffects();
+
+    expect(getText()).toBe('foo');
+  });
+
   it('calls the correct mapState if mapState changes and the store updates', () => {
     const Component = ({n}: {n: number}) => {
       const mapState = React.useCallback((s: IState) => s.foo + ' ' + n, [n]);
