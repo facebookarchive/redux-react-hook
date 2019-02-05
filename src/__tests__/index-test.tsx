@@ -15,7 +15,7 @@ interface IState {
 }
 
 describe('redux-react-hook', () => {
-  let subscriberCallback: () => void;
+  let subscriberCallback: (() => void) | null;
   let state: IState;
   let cancelSubscription: () => void;
   let store: Store<IState, IAction>;
@@ -32,6 +32,13 @@ describe('redux-react-hook', () => {
     replaceReducer() {},
   });
 
+  function updateStore(newState: IState) {
+    state = newState;
+    if (subscriberCallback) {
+      subscriberCallback();
+    }
+  }
+
   beforeEach(() => {
     cancelSubscription = jest.fn();
     state = {bar: 123, foo: 'bar'};
@@ -43,6 +50,7 @@ describe('redux-react-hook', () => {
 
   afterEach(() => {
     document.body.removeChild(reactRoot);
+    subscriberCallback = null;
   });
 
   function render(
@@ -84,8 +92,7 @@ describe('redux-react-hook', () => {
 
     render(<Component />);
 
-    state = {bar: 123, foo: 'foo'};
-    subscriberCallback();
+    updateStore({bar: 123, foo: 'foo'});
 
     expect(getText()).toBe('foo');
   });
@@ -121,8 +128,7 @@ describe('redux-react-hook', () => {
 
     expect(getText()).toBe('bar 1');
 
-    state = {bar: 456, ...state};
-    subscriberCallback();
+    updateStore({bar: 456, ...state});
 
     expect(getText()).toBe('bar 1');
   });
@@ -156,7 +162,9 @@ describe('redux-react-hook', () => {
 
     store = createStore();
     state = {...state, foo: 'hello'};
+
     render(<Component />);
+
     expect(getText()).toBe('hello');
   });
 
@@ -169,8 +177,7 @@ describe('redux-react-hook', () => {
 
     render(<Component />, {dontFlushEffects: true});
 
-    state = {...state, foo: 'foo'};
-    subscriberCallback();
+    updateStore({...state, foo: 'foo'});
 
     flushEffects();
 
@@ -187,8 +194,7 @@ describe('redux-react-hook', () => {
     render(<Component n={100} />);
     render(<Component n={45} />);
 
-    state = {...state, foo: 'foo'};
-    subscriberCallback();
+    updateStore({...state, foo: 'foo'});
 
     expect(getText()).toBe('foo 45');
   });
@@ -208,8 +214,7 @@ describe('redux-react-hook', () => {
     ReactDOM.unmountComponentAtNode(reactRoot);
 
     const consoleErrorSpy = jest.spyOn(console, 'error');
-    state = {...state, foo: 'foo'};
-    subscriberCallback();
+    updateStore({...state, foo: 'foo'});
 
     // mapState is called during and after the first render
     expect(mapStateCalls).toBe(2);
