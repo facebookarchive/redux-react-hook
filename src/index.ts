@@ -25,12 +25,14 @@ export function useMappedState<TState, TResult>(
   mapState: (state: TState) => TResult,
 ): TResult {
   const store = useContext(StoreContext);
-  const [derivedState, setDerivedState] = useState(() =>
-    mapState(store.getState()),
-  );
+
   if (!store) {
     throw new Error(CONTEXT_ERROR_MESSAGE);
   }
+
+  const [derivedState, setDerivedState] = useState(() =>
+    mapState(store.getState()),
+  );
 
   useEffect(
     () => {
