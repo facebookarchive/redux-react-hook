@@ -45,12 +45,18 @@ describe('redux-react-hook', () => {
     document.body.removeChild(reactRoot);
   });
 
-  function render(element: React.ReactElement<any>) {
+  function render(
+    element: React.ReactElement<any>,
+    options?: {dontFlushEffects?: boolean},
+  ) {
     ReactDOM.render(
       <StoreContext.Provider value={store}>{element}</StoreContext.Provider>,
       reactRoot,
     );
-    flushEffects();
+
+    if (!options || !options.dontFlushEffects) {
+      flushEffects();
+    }
   }
 
   function getText() {
@@ -161,10 +167,12 @@ describe('redux-react-hook', () => {
       return <div>{foo}</div>;
     };
 
-    render(<Component />);
+    render(<Component />, {dontFlushEffects: true});
 
     state = {...state, foo: 'foo'};
     subscriberCallback();
+
+    flushEffects();
 
     expect(getText()).toBe('foo');
   });
