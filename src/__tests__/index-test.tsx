@@ -50,6 +50,7 @@ describe('redux-react-hook', () => {
       <StoreContext.Provider value={store}>{element}</StoreContext.Provider>,
       reactRoot,
     );
+    flushEffects();
   }
 
   function getText() {
@@ -165,9 +166,6 @@ describe('redux-react-hook', () => {
     state = {...state, foo: 'foo'};
     subscriberCallback();
 
-    // run the useEffect that subscribes to the store
-    flushEffects();
-
     expect(getText()).toBe('foo');
   });
 
@@ -180,8 +178,6 @@ describe('redux-react-hook', () => {
 
     render(<Component n={100} />);
     render(<Component n={45} />);
-
-    flushEffects();
 
     state = {...state, foo: 'foo'};
     subscriberCallback();
@@ -201,9 +197,6 @@ describe('redux-react-hook', () => {
     };
 
     render(<Component />);
-
-    flushEffects();
-
     ReactDOM.unmountComponentAtNode(reactRoot);
 
     const consoleErrorSpy = jest.spyOn(console, 'error');
@@ -232,8 +225,6 @@ describe('redux-react-hook', () => {
         <Component />
       </StoreContext.Provider>,
     );
-
-    flushEffects();
 
     store.dispatch({
       type: 'test',

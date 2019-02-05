@@ -25,36 +25,11 @@ export function useMappedState<TState, TResult>(
   mapState: (state: TState) => TResult,
 ): TResult {
   const store = useContext(StoreContext);
+  const [derivedState, setDerivedState] = useState(() =>
+    mapState(store.getState()),
+  );
   if (!store) {
     throw new Error(CONTEXT_ERROR_MESSAGE);
-  }
-  const mapStateFactory = () => mapState;
-  const runMapState = () => mapState(store.getState());
-
-  const [derivedState, setDerivedState] = useState(runMapState);
-
-  // If the store or mapState change, rerun mapState
-  const [prevStore, setPrevStore] = useState(store);
-  const [prevMapState, setPrevMapState] = useState(mapStateFactory);
-
-  // We keep lastDerivedState in a ref and update it imperatively
-  // after calling setDerivedState so it's always up-to-date.
-  // We can't update it in useEffect because state might be updated
-  // synchronously multiple times before render occurs.
-  const lastDerivedState = useRef(derivedState);
-
-  const wrappedSetDerivedState = () => {
-    const newDerivedState = runMapState();
-    if (!shallowEqual(newDerivedState, lastDerivedState.current)) {
-      setDerivedState(newDerivedState);
-      lastDerivedState.current = newDerivedState;
-    }
-  };
-
-  if (prevStore !== store || prevMapState !== mapState) {
-    setPrevStore(store);
-    setPrevMapState(mapStateFactory);
-    wrappedSetDerivedState();
   }
 
   useEffect(
@@ -69,8 +44,12 @@ export function useMappedState<TState, TResult>(
           // Redux doesn't guarantee unsubscriptions happen until next dispatch.
           return;
         }
-
-        wrappedSetDerivedState();
+        setDerivedState(oldDerivedState => {
+          const nextDerivedState = mapState(store.getState());
+          return shallowEqual(oldDerivedState, nextDerivedState)
+            ? oldDerivedState
+            : nextDerivedState;
+        });
       };
 
       // Pull data from the store after first render in case the store has
