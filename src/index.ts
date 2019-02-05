@@ -100,3 +100,19 @@ export function useDispatch<TAction extends Action>(): Dispatch<TAction> {
   }
   return store.dispatch;
 }
+
+export function getHooksForStore<S, A>(
+  store: Store<S, A>,
+): {
+  store: Store<S, A>,
+  StoreContext: Context<null | Store<S, A>>,
+  useMappedState: <S, TResult>(mapState: (state: S) => TResult) => TResult,
+  useDispatch: () => Dispatch<A>,
+} {
+  return {
+    store,
+    StoreContext, // Override loose type.
+    useMappedState,
+    useDispatch,
+  };
+}
