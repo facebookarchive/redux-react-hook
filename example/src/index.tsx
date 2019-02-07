@@ -2,7 +2,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {StoreContext} from './redux-react-hook';
+import {StoreContext} from './Store';
 
 import App from './App';
 import {makeStore} from './Store';

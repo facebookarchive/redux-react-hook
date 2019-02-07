@@ -2,8 +2,7 @@
 
 import {css} from 'emotion';
 import React, {useCallback} from 'react';
-import {useMappedState} from './redux-react-hook';
-import {IState} from './Store';
+import {IState, useMappedState} from './Store';
 import TodoItem from './TodoItem';
 
 export default function TodoList() {
