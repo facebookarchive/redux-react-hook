@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import {act} from 'react-dom/test-utils';
 import {Store, createStore as createReduxStore} from 'redux';
 import {StoreContext, useMappedState} from '..';
 
@@ -15,7 +16,7 @@ interface IState {
 }
 
 describe('redux-react-hook', () => {
-  let subscriberCallback: () => void;
+  let subscriberCallback: (() => void) | null;
   let state: IState;
   let cancelSubscription: () => void;
   let store: Store<IState, IAction>;
@@ -32,6 +33,15 @@ describe('redux-react-hook', () => {
     replaceReducer() {},
   });
 
+  function updateStore(newState: IState) {
+    state = newState;
+    act(() => {
+      if (subscriberCallback) {
+        subscriberCallback();
+      }
+    });
+  }
+
   beforeEach(() => {
     cancelSubscription = jest.fn();
     state = {bar: 123, foo: 'bar'};
@@ -43,13 +53,16 @@ describe('redux-react-hook', () => {
 
   afterEach(() => {
     document.body.removeChild(reactRoot);
+    subscriberCallback = null;
   });
 
   function render(element: React.ReactElement<any>) {
-    ReactDOM.render(
-      <StoreContext.Provider value={store}>{element}</StoreContext.Provider>,
-      reactRoot,
-    );
+    act(() => {
+      ReactDOM.render(
+        <StoreContext.Provider value={store}>{element}</StoreContext.Provider>,
+        reactRoot,
+      );
+    });
   }
 
   function getText() {
@@ -77,8 +90,7 @@ describe('redux-react-hook', () => {
 
     render(<Component />);
 
-    state = {bar: 123, foo: 'foo'};
-    subscriberCallback();
+    updateStore({bar: 123, foo: 'foo'});
 
     expect(getText()).toBe('foo');
   });
@@ -114,8 +126,7 @@ describe('redux-react-hook', () => {
 
     expect(getText()).toBe('bar 1');
 
-    state = {bar: 456, ...state};
-    subscriberCallback();
+    updateStore({bar: 456, ...state});
 
     expect(getText()).toBe('bar 1');
   });
@@ -149,7 +160,9 @@ describe('redux-react-hook', () => {
 
     store = createStore();
     state = {...state, foo: 'hello'};
+
     render(<Component />);
+
     expect(getText()).toBe('hello');
   });
 
@@ -162,11 +175,7 @@ describe('redux-react-hook', () => {
 
     render(<Component />);
 
-    state = {...state, foo: 'foo'};
-    subscriberCallback();
-
-    // run the useEffect that subscribes to the store
-    flushEffects();
+    updateStore({...state, foo: 'foo'});
 
     expect(getText()).toBe('foo');
   });
@@ -181,10 +190,7 @@ describe('redux-react-hook', () => {
     render(<Component n={100} />);
     render(<Component n={45} />);
 
-    flushEffects();
-
-    state = {...state, foo: 'foo'};
-    subscriberCallback();
+    updateStore({...state, foo: 'foo'});
 
     expect(getText()).toBe('foo 45');
   });
@@ -201,14 +207,10 @@ describe('redux-react-hook', () => {
     };
 
     render(<Component />);
-
-    flushEffects();
-
     ReactDOM.unmountComponentAtNode(reactRoot);
 
     const consoleErrorSpy = jest.spyOn(console, 'error');
-    state = {...state, foo: 'foo'};
-    subscriberCallback();
+    updateStore({...state, foo: 'foo'});
 
     // mapState is called during and after the first render
     expect(mapStateCalls).toBe(2);
@@ -233,22 +235,17 @@ describe('redux-react-hook', () => {
       </StoreContext.Provider>,
     );
 
-    flushEffects();
-
-    store.dispatch({
-      type: 'test',
-      payload: 1,
-    });
-    store.dispatch({
-      type: 'test',
-      payload: 0,
+    act(() => {
+      store.dispatch({
+        type: 'test',
+        payload: 1,
+      });
+      store.dispatch({
+        type: 'test',
+        payload: 0,
+      });
     });
 
     expect(getText()).toBe('0');
   });
 });
-
-// https://github.com/kentcdodds/react-testing-library/commit/11a41ce3ad9e9695f4b1662a5c67b890fc304894
-function flushEffects() {
-  ReactDOM.render(<div />, document.createElement('div'));
-}

@@ -87,7 +87,7 @@ export function DeleteButton({index}) {
 
 ## Usage
 
-NOTE: React hooks currently require `react` and `react-dom` version `16.7.0-alpha.0` or higher.
+NOTE: React hooks require `react` and `react-dom` version `16.8.0` or higher.
 
 ### `StoreContext`
 
