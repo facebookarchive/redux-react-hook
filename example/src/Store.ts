@@ -1,7 +1,8 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
-import {Action, createStore, Store} from 'redux';
+import {createStore, Store} from 'redux';
 import reducer from './reducer';
+import {create} from './redux-react-hook';
 
 export interface IState {
   lastUpdated: number;
@@ -31,3 +32,9 @@ export const INITIAL_STATE: IState = {
     'Do the mopping!',
   ],
 };
+
+export const {StoreContext, useDispatch, useMappedState} = create<
+  IState,
+  Action,
+  Store<IState, Action>
+>();

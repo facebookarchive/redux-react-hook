@@ -2,7 +2,7 @@
 
 import {css} from 'emotion';
 import React, {useCallback} from 'react';
-import {useDispatch, useMappedState} from './redux-react-hook';
+import {useDispatch, useMappedState} from './Store';
 import {IState} from './Store';
 
 export default function TodoItem({index}: {index: number}) {
