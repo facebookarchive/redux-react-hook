@@ -1,5 +1,12 @@
 # Changelog for redux-react-hook
 
+## v3.1.0
+
+Feb 6, 2019
+
+- Update React dependency to 16.8.1, the one with hooks
+- Update all other dependencies to the latest
+
 ## v3.0.4
 
 Feb 1, 2019
