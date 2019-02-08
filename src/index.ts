@@ -34,10 +34,6 @@ export function useMappedState<TState, TResult>(
 
   const [derivedState, setDerivedState] = useState(runMapState);
 
-  // If the store or mapState change, rerun mapState
-  const [prevStore, setPrevStore] = useState(store);
-  const [prevMapState, setPrevMapState] = useState(mapStateFactory);
-
   // We keep lastDerivedState in a ref and update it imperatively
   // after calling setDerivedState so it's always up-to-date.
   // We can't update it in useEffect because state might be updated
@@ -51,12 +47,6 @@ export function useMappedState<TState, TResult>(
       lastDerivedState.current = newDerivedState;
     }
   };
-
-  if (prevStore !== store || prevMapState !== mapState) {
-    setPrevStore(store);
-    setPrevMapState(mapStateFactory);
-    wrappedSetDerivedState();
-  }
 
   useEffect(
     () => {
