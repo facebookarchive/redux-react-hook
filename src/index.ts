@@ -23,6 +23,7 @@ const CONTEXT_ERROR_MESSAGE =
  */
 export function useMappedState<TState, TResult>(
   mapState: (state: TState) => TResult,
+  memoizationArray: Array<any> = [mapState],
 ): TResult {
   const store = useContext(StoreContext);
   if (!store) {
@@ -87,7 +88,7 @@ export function useMappedState<TState, TResult>(
         unsubscribe();
       };
     },
-    [store, mapState],
+    [store, ...memoizationArray],
   );
 
   return derivedState;
