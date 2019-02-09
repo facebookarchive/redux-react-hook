@@ -45,7 +45,7 @@ export default {
       // For more info about the issue:
       // https://stackoverflow.com/questions/31169760/how-to-avoid-react-loading-twice-with-webpack-when-developing
       {
-        files: ['src/index.ts', 'src/shallowEqual.ts'],
+        files: ['src/index.ts', 'src/create.ts', 'src/shallowEqual.ts'],
         dest: 'example/src/redux-react-hook/',
       },
     ]),

@@ -169,6 +169,34 @@ function DeleteButton({index}) {
 }
 ```
 
+### `create()`
+
+Creates an instance of Redux React Hooks with a new `StoreContext`. The above functions are just exports of the default instance. You may want to create your own instance if:
+
+1. You want better type safety without annotating every callsite. Creating your own instance ensures that the types are the same for all consumers. See the example for more info.
+2. You have multiple Redux stores (this is not common)
+
+```tsx
+// MyStoreHooks.js
+
+import {create} from 'redux-react-hook';
+
+export const {StoreContext, useDispatch, useMappedState} = create();
+```
+
+```tsx
+// MyStoreHooks.ts
+
+import {create} from 'redux-react-hook';
+
+// Example in TypeScript where you have defined IState and Action
+export const {StoreContext, useDispatch, useMappedState} = create<
+  IState,
+  Action,
+  Store<IState, Action>
+>();
+```
+
 ## Example
 
 You can try out `redux-react-hook` right in your browser with the [Codesandbox example](https://codesandbox.io/s/github/ianobermiller/redux-react-hook-example).
