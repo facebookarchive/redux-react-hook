@@ -42,6 +42,7 @@ export function useMappedState<TState, TResult>(
   // We can't update it in useEffect because state might be updated
   // synchronously multiple times before render occurs.
   const lastDerivedState = useRef(derivedState);
+  
 
   const wrappedSetDerivedState = () => {
     const newDerivedState = runMapState();
@@ -56,35 +57,38 @@ export function useMappedState<TState, TResult>(
     setPrevMapState(mapStateFactory);
     wrappedSetDerivedState();
   }
+  
+  // Run the mapState callback and if the result has changed, make the
+  // component re-render with the new state.
+  const checkForUpdates = () => {
+    if (didUnsubscribe.current) {
+      // Don't run stale listeners.
+      // Redux doesn't guarantee unsubscriptions happen until next dispatch.
+      return;
+    }
+
+    wrappedSetDerivedState();
+  };
+
+  // Subscribe to the store to be notified of subsequent changes.
+  const didUnsubscribe = useRef(false);
+  const unsubscribe = useRef(store.subscribe(checkForUpdates));
 
   useEffect(
     () => {
-      let didUnsubscribe = false;
-
-      // Run the mapState callback and if the result has changed, make the
-      // component re-render with the new state.
-      const checkForUpdates = () => {
-        if (didUnsubscribe) {
-          // Don't run stale listeners.
-          // Redux doesn't guarantee unsubscriptions happen until next dispatch.
-          return;
-        }
-
-        wrappedSetDerivedState();
-      };
-
       // Pull data from the store after first render in case the store has
       // changed since we began.
       checkForUpdates();
 
-      // Subscribe to the store to be notified of subsequent changes.
-      const unsubscribe = store.subscribe(checkForUpdates);
+      if (didUnsubscribe.current) {
+        unsubscribe.current = store.subscribe(checkForUpdates);
+      }
 
       // The return value of useEffect will be called when unmounting, so
       // we use it to unsubscribe from the store.
       return () => {
-        didUnsubscribe = true;
-        unsubscribe();
+        didUnsubscribe.current = true;
+        unsubscribe.current();
       };
     },
     [store, mapState],
