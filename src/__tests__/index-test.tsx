@@ -249,6 +249,21 @@ describe('redux-react-hook', () => {
 
       expect(getText()).toBe('0');
     });
+
+    it('renders once if new mapState returns same mappedState', () => {
+      let renderCount = 0;
+      const Component = ({prop}: {prop: any}) => {
+        renderCount++;
+        const mapState = React.useCallback((s: any) => s, [prop]);
+        useMappedState(mapState);
+        return null;
+      };
+
+      render(<Component prop={1} />);
+      render(<Component prop={2} />);
+
+      expect(renderCount).toBe(2);
+    });
   });
 
   describe('useDispatch', () => {
@@ -268,7 +283,7 @@ describe('redux-react-hook', () => {
   });
 
   describe('create', () => {
-    it('returnsa new context and functions each time', () => {
+    it('returns a new context and functions each time', () => {
       const first = create();
       const second = create();
       expect(first.StoreContext).not.toBe(second.StoreContext);
