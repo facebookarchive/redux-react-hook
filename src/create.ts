@@ -42,15 +42,13 @@ export function create<
     if (!store) {
       throw new Error(CONTEXT_ERROR_MESSAGE);
     }
-    const mapStateFactory = () => mapState;
     const runMapState = () => mapState(store.getState());
 
     const [derivedState, setDerivedState] = useState(runMapState);
 
     // If the store or mapState change, rerun mapState
-    const [prevStore, setPrevStore] = useState(store);
-    const [prevMapState, setPrevMapState] = useState(mapStateFactory);
-
+    const lastStore = useRef(store);
+    const lastMapState = useRef(mapState);
     // We keep lastDerivedState in a ref and update it imperatively
     // after calling setDerivedState so it's always up-to-date.
     // We can't update it in useEffect because state might be updated
@@ -65,9 +63,9 @@ export function create<
       }
     };
 
-    if (prevStore !== store || prevMapState !== mapState) {
-      setPrevStore(store);
-      setPrevMapState(mapStateFactory);
+    if (lastStore.current !== store || lastMapState.current !== mapState) {
+      lastStore.current = store;
+      lastMapState.current = mapState;
       wrappedSetDerivedState();
     }
 
