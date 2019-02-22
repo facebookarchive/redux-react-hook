@@ -1,5 +1,12 @@
 # Changelog for redux-react-hook
 
+## v3.2.0
+
+Feb 21, 2019
+
+- Avoid double render if new mapState returns same mappedState (thanks @Turanchoks!)
+- Add create function for better typing (@thanks nmn!)
+
 ## v3.1.0
 
 Feb 6, 2019
