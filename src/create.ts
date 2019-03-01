@@ -1,6 +1,13 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
-import {createContext, useContext, useEffect, useRef, useState} from 'react';
+import {
+  createContext,
+  useContext,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {Action, Dispatch, Store} from 'redux';
 import shallowEqual from './shallowEqual';
 
@@ -21,6 +28,11 @@ export function create<
   StoreContext: React.Context<TStore | null>;
   useMappedState: <TResult>(mapState: (state: TState) => TResult) => TResult;
   useDispatch: () => Dispatch<TAction>;
+  useRedux: (
+    mapState?: (state: TState) => any,
+    mapDispatch?: () => any,
+    memo?: Array<string>,
+  ) => any;
 } {
   const StoreContext = createContext<TStore | null>(null);
 
@@ -110,9 +122,25 @@ export function create<
     return store.dispatch;
   }
 
+  function useRedux(
+    mapState?: (state: TState) => any,
+    mapDispatch = (): any => {},
+    memo: string[] = [],
+  ): any {
+    const mapStateMemo = useCallback(mapState || (() => {}), memo);
+    const stateData = useMappedState(mapStateMemo);
+
+    const mapDispatchMemo: any = useCallback(mapDispatch, memo);
+    const dispatch = useDispatch();
+    const dispatchData: any = mapDispatchMemo(dispatch);
+
+    return {...stateData, ...dispatchData};
+  }
+
   return {
     StoreContext,
     useDispatch,
     useMappedState,
+    useRedux,
   };
 }

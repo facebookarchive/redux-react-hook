@@ -4,7 +4,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {act} from 'react-dom/test-utils';
 import {Store, createStore as createReduxStore} from 'redux';
-import {StoreContext, create, useDispatch, useMappedState} from '..';
+import {StoreContext, create, useDispatch, useMappedState, useRedux} from '..';
 
 interface IAction {
   type: 'add todo';
@@ -279,6 +279,71 @@ describe('redux-react-hook', () => {
       render(<Component />);
 
       expect(store.dispatch).toHaveBeenLastCalledWith({foo: 1});
+    });
+  });
+
+  describe('useRedux', () => {
+    it('should return an object when no data is passed', () => {
+      let reduxObject;
+      const Component = () => {
+        reduxObject = useRedux();
+        return null;
+      };
+
+      render(<Component />);
+      expect(reduxObject).toEqual({});
+    });
+
+    it('should return an object with state function', () => {
+      let reduxObject;
+      const Component = () => {
+        reduxObject = useRedux(state => state);
+        return null;
+      };
+
+      render(<Component />);
+      expect(reduxObject).toEqual(store.getState());
+    });
+
+    it('should return an action', () => {
+      let reduxObject: any;
+
+      const actionFunction = jest.fn();
+      const mapDispatch = () => {
+        return {
+          action: actionFunction,
+        };
+      };
+
+      const Component = () => {
+        reduxObject = useRedux(undefined, mapDispatch);
+        return null;
+      };
+      render(<Component />);
+
+      expect(reduxObject.action).toEqual(actionFunction);
+    });
+
+    it('should call useCallback eachTime with the memo object', () => {
+      const useCallbackSpy = jest.spyOn(React, 'useCallback');
+      const memo = ['id'];
+
+      const actionFunction = jest.fn();
+      const mapDispatch = () => {
+        return {
+          action: actionFunction,
+        };
+      };
+
+      const Component = () => {
+        useRedux(state => state, mapDispatch, memo);
+        return null;
+      };
+      render(<Component />);
+
+      useCallbackSpy.mock.calls.forEach(call => {
+        expect(call[1]).toBe(memo);
+      });
     });
   });
 

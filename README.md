@@ -169,6 +169,32 @@ function DeleteButton({index}) {
 }
 ```
 
+### `useRedux()`
+
+It's similar to container component code in redux.
+It's a composition of useDispatch, useMappedState and useCallback with memo.
+
+```tsx
+import {useRedux} from 'redux-react-hook';
+
+function LikeButton({index}) {
+  const mapState = state => {
+    return {
+      nbOfLike: state.likes[index].nbOfLike,
+    };
+  };
+  const mapDispatch = dispatch => {
+    return {
+      likeHandler: () => dispatch({type: 'like', index});
+    };
+  }
+
+  const {likeHandler, nbOfLike} = useRedux(mapState, mapDispatch, [index]);
+
+  return <button onClick={likeHandler}>nbOfLike</button>;
+}
+```
+
 ### `create()`
 
 Creates an instance of Redux React Hooks with a new `StoreContext`. The above functions are just exports of the default instance. You may want to create your own instance if:

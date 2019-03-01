@@ -2,7 +2,7 @@
 
 import {create} from './create';
 
-export const {StoreContext, useDispatch, useMappedState} = create<
+export const {StoreContext, useDispatch, useMappedState, useRedux} = create<
   any,
   any,
   any
