@@ -48,18 +48,14 @@ export function create<
 
     const lastStore = useRef(store);
     const lastMapState = useRef(mapState);
-    // Keep lastDerivedState in a ref and update it imperatively
-    // after calling setDerivedState so it's always up-to-date.
-    // We can't update it in useEffect because state might be updated
-    // synchronously multiple times before render occurs.
-    const lastDerivedState = useRef(derivedState);
 
     const wrappedSetDerivedState = () => {
       const newDerivedState = runMapState();
-      if (!shallowEqual(newDerivedState, lastDerivedState.current)) {
-        setDerivedState(newDerivedState);
-        lastDerivedState.current = newDerivedState;
-      }
+      setDerivedState(lastDerivedState =>
+        shallowEqual(newDerivedState, lastDerivedState)
+          ? lastDerivedState
+          : newDerivedState,
+      );
     };
 
     // If the store or mapState change, rerun mapState

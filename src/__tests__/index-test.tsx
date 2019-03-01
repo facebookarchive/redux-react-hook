@@ -253,9 +253,11 @@ describe('redux-react-hook', () => {
     it('renders once if new mapState returns same mappedState', () => {
       let renderCount = 0;
       const Component = ({prop}: {prop: any}) => {
-        renderCount++;
-        const mapState = React.useCallback((s: any) => s, [prop]);
+        const mapState = React.useCallback((s: IState) => s, [prop]);
         useMappedState(mapState);
+        React.useEffect(() => {
+          renderCount++;
+        });
         return null;
       };
 
