@@ -47,28 +47,27 @@ export function create<
     if (!store) {
       throw new MissingProviderError();
     }
-    const runMapState = () => mapState(store.getState());
 
-    const [derivedState, setDerivedState] = useState(runMapState);
+    const derivedState = mapState(store.getState());
 
-    const lastStore = useRef(store);
-    const lastMapState = useRef(mapState);
-
-    const wrappedSetDerivedState = () => {
-      const newDerivedState = runMapState();
-      setDerivedState(lastDerivedState =>
-        shallowEqual(newDerivedState, lastDerivedState)
-          ? lastDerivedState
-          : newDerivedState,
-      );
-    };
-
-    // If the store or mapState change, rerun mapState
-    if (lastStore.current !== store || lastMapState.current !== mapState) {
-      lastStore.current = store;
-      lastMapState.current = mapState;
-      wrappedSetDerivedState();
+    if (process.env.NODE_ENV === 'development') {
+      const derivedStateCheck = mapState(store.getState());
+      if (!shallowEqual(derivedStateCheck, derivedState)) {
+        console.warn(
+          'Your mapState function returns a different value ' +
+            'if called with the same state. ' +
+            'You should consider memoizing the mapState.',
+        );
+      }
     }
+
+    const [, setUpdates] = useState(0);
+
+    const lastStateRef = useRef(derivedState);
+
+    useEffect(() => {
+      lastStateRef.current = derivedState;
+    });
 
     useEffect(() => {
       let didUnsubscribe = false;
@@ -82,7 +81,11 @@ export function create<
           return;
         }
 
-        wrappedSetDerivedState();
+        const newDerivedState = mapState(store.getState());
+
+        if (!shallowEqual(newDerivedState, lastStateRef.current)) {
+          setUpdates(updates => updates + 1);
+        }
       };
 
       // Pull data from the store after first render in case the store has

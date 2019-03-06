@@ -255,9 +255,7 @@ describe('redux-react-hook', () => {
       const Component = ({prop}: {prop: any}) => {
         const mapState = React.useCallback((s: IState) => s, [prop]);
         useMappedState(mapState);
-        React.useEffect(() => {
-          renderCount++;
-        });
+        renderCount++;
         return null;
       };
 
@@ -278,6 +276,24 @@ describe('redux-react-hook', () => {
       act(() => {
         ReactDOM.render(<Component />, reactRoot);
       });
+    });
+
+    it('does not provide stale mapped state', () => {
+      let flag = false;
+
+      const Component = ({prop}: {prop: any}) => {
+        const mapState = React.useCallback((s: IState) => s[prop], [prop]);
+        const mappedState = useMappedState(mapState);
+        if (state[prop] !== mappedState) {
+          flag = true;
+        }
+        return null;
+      };
+
+      render(<Component prop="foo" />);
+      render(<Component prop="bar" />);
+
+      expect(flag).toBe(false);
     });
   });
 
