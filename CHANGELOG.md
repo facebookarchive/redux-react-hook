@@ -1,5 +1,11 @@
 # Changelog for redux-react-hook
 
+## v3.2.1
+
+Mar 13, 2019
+
+- Remove react-dom as a peerDependency
+
 ## v3.2.0
 
 Feb 21, 2019
