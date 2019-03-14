@@ -4,9 +4,14 @@ import {createContext, useContext, useEffect, useRef, useState} from 'react';
 import {Action, Dispatch, Store} from 'redux';
 import shallowEqual from './shallowEqual';
 
-const CONTEXT_ERROR_MESSAGE =
-  'redux-react-hook requires your Redux store to ' +
-  'be passed through context via the <StoreContext.Provider>';
+class MissingProviderError extends Error {
+  constructor() {
+    super(
+      'redux-react-hook requires your Redux store to be passed through ' +
+        'context via the <StoreContext.Provider>',
+    );
+  }
+}
 
 /**
  * To use redux-react-hook with stronger type safety, or to use with multiple
@@ -40,7 +45,7 @@ export function create<
   ): TResult {
     const store = useContext(StoreContext);
     if (!store) {
-      throw new Error(CONTEXT_ERROR_MESSAGE);
+      throw new MissingProviderError();
     }
     const runMapState = () => mapState(store.getState());
 
@@ -101,7 +106,7 @@ export function create<
   function useDispatch(): Dispatch<TAction> {
     const store = useContext(StoreContext);
     if (!store) {
-      throw new Error(CONTEXT_ERROR_MESSAGE);
+      throw new MissingProviderError();
     }
     return store.dispatch;
   }

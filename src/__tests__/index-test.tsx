@@ -266,6 +266,19 @@ describe('redux-react-hook', () => {
 
       expect(renderCount).toBe(2);
     });
+
+    it('throws if provider is missing', () => {
+      const Component = () => {
+        const mapState = React.useCallback((s: IState) => s, []);
+        expect(() => {
+          useMappedState(mapState);
+        }).toThrow();
+        return null;
+      };
+      act(() => {
+        ReactDOM.render(<Component />, reactRoot);
+      });
+    });
   });
 
   describe('useDispatch', () => {
@@ -281,6 +294,18 @@ describe('redux-react-hook', () => {
       render(<Component />);
 
       expect(store.dispatch).toHaveBeenLastCalledWith({foo: 1});
+    });
+
+    it('throws if provider is missing', () => {
+      const Component = () => {
+        expect(() => {
+          useDispatch();
+        }).toThrow();
+        return null;
+      };
+      act(() => {
+        ReactDOM.render(<Component />, reactRoot);
+      });
     });
   });
 
