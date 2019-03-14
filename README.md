@@ -2,10 +2,10 @@
 
 > React hook for accessing mapped state and dispatch from a Redux store.
 
-[![Build Status](https://img.shields.io/travis/com/facebookincubator/redux-react-hook.svg?style=for-the-badge)](https://travis-ci.com/facebookincubator/redux-react-hook)
-[![NPM](https://img.shields.io/npm/v/redux-react-hook.svg?style=for-the-badge)](https://www.npmjs.com/package/redux-react-hook)
-[![Bundle Size](https://img.shields.io/bundlephobia/minzip/redux-react-hook.svg?style=for-the-badge)](https://bundlephobia.com/result?p=redux-react-hook@latest)
-[![Downloads](https://img.shields.io/npm/dw/redux-react-hook.svg?style=for-the-badge)](https://www.npmjs.com/package/redux-react-hook)
+[![Build Status](https://img.shields.io/travis/com/facebookincubator/redux-react-hook.svg)](https://travis-ci.com/facebookincubator/redux-react-hook)
+[![NPM](https://img.shields.io/npm/v/redux-react-hook.svg)](https://www.npmjs.com/package/redux-react-hook)
+[![Bundle Size](https://img.shields.io/bundlephobia/minzip/redux-react-hook.svg)](https://bundlephobia.com/result?p=redux-react-hook@latest)
+[![Downloads](https://img.shields.io/npm/dw/redux-react-hook.svg)](https://www.npmjs.com/package/redux-react-hook)
 
 ## Table of Contents
 
