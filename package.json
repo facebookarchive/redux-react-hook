@@ -30,7 +30,6 @@
   "peerDependencies": {
     "prop-types": "^15.5.4",
     "react": "^16.8.1",
-    "react-dom": "^16.8.1",
     "redux": "^4.0.1"
   },
   "devDependencies": {
