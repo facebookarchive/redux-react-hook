@@ -1,6 +1,13 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
-import {createContext, useContext, useEffect, useRef, useState} from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+} from 'react';
 import {Action, Dispatch, Store} from 'redux';
 import shallowEqual from './shallowEqual';
 
@@ -48,10 +55,11 @@ export function create<
       throw new MissingProviderError();
     }
 
-    const derivedState = mapState(store.getState());
+    const state = store.getState();
+    const derivedState = useMemo(() => mapState(state), [state, mapState]);
 
     if (process.env.NODE_ENV === 'development') {
-      const derivedStateCheck = mapState(store.getState());
+      const derivedStateCheck = mapState(state);
       if (!shallowEqual(derivedStateCheck, derivedState)) {
         console.warn(
           'Your mapState function returns a different value ' +

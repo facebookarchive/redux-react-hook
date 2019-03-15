@@ -295,6 +295,29 @@ describe('redux-react-hook', () => {
 
       expect(flag).toBe(false);
     });
+
+    it("doesn't call mapState too often", () => {
+      let mapStateCalls = 0;
+
+      const Component = () => {
+        const mapState = React.useCallback((s: IState) => {
+          mapStateCalls++;
+          return s.foo;
+        }, []);
+        const foo = useMappedState(mapState);
+        return <div>{foo}</div>;
+      };
+
+      render(<Component />);
+      render(<Component />);
+      render(<Component />);
+      render(<Component />);
+
+      // mapState called twice on subscription:
+      // 1. Pull data on initial render
+      // 2. Pull data before right before subscribing in useEffect
+      expect(mapStateCalls).toBe(2);
+    });
   });
 
   describe('useDispatch', () => {
