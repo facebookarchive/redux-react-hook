@@ -4,7 +4,13 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {act} from 'react-dom/test-utils';
 import {Store, createStore as createReduxStore} from 'redux';
-import {StoreContext, create, useDispatch, useMappedState} from '..';
+import {
+  StoreContext,
+  create,
+  useBoundActionCreators,
+  useDispatch,
+  useMappedState,
+} from '..';
 
 interface IAction {
   type: 'add todo';
@@ -306,6 +312,47 @@ describe('redux-react-hook', () => {
       act(() => {
         ReactDOM.render(<Component />, reactRoot);
       });
+    });
+  });
+
+  describe('useBoundActionCreators', () => {
+    it('calls store dispatch', () => {
+      const ac1 = (arg: string) => arg;
+      const ac2 = (a: number, b: number) => ({a, b});
+      const Component = () => {
+        const dispatch = useBoundActionCreators({ac1, ac2});
+        React.useEffect(() => {
+          dispatch.ac1('foo');
+          dispatch.ac2(3, 4);
+        });
+        return null;
+      };
+
+      render(<Component />);
+
+      expect(store.dispatch).toHaveBeenCalledTimes(2);
+      expect(store.dispatch).toHaveBeenCalledWith('foo');
+      expect(store.dispatch).toHaveBeenLastCalledWith({a: 3, b: 4});
+    });
+
+    it('calls store dispatch (inline action creators)', () => {
+      const Component = () => {
+        const dispatch = useBoundActionCreators({
+          ac1: (arg: string) => arg,
+          ac2: (a: number, b: number) => ({a, b}),
+        });
+        React.useEffect(() => {
+          dispatch.ac1('foo');
+          dispatch.ac2(3, 4);
+        });
+        return null;
+      };
+
+      render(<Component />);
+
+      expect(store.dispatch).toHaveBeenCalledTimes(2);
+      expect(store.dispatch).toHaveBeenCalledWith('foo');
+      expect(store.dispatch).toHaveBeenLastCalledWith({a: 3, b: 4});
     });
   });
 

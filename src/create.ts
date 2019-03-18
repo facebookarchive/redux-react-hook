@@ -1,8 +1,13 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
 import {createContext, useContext, useEffect, useRef, useState} from 'react';
-import {Action, Dispatch, Store} from 'redux';
+import {Action, ActionCreatorsMapObject, Dispatch, Store} from 'redux';
 import shallowEqual from './shallowEqual';
+
+type InferArgs<F> = F extends (...args: infer T) => unknown ? T : never;
+export type DispatchMap<T> = {
+  [K in keyof T]: (...args: InferArgs<T[K]>) => void
+};
 
 class MissingProviderError extends Error {
   constructor() {
@@ -24,8 +29,11 @@ export function create<
   TStore extends Store<TState, TAction>
 >(): {
   StoreContext: React.Context<TStore | null>;
-  useMappedState: <TResult>(mapState: (state: TState) => TResult) => TResult;
+  useBoundActionCreators: <T extends ActionCreatorsMapObject>(
+    actions: T,
+  ) => DispatchMap<T>;
   useDispatch: () => Dispatch<TAction>;
+  useMappedState: <TResult>(mapState: (state: TState) => TResult) => TResult;
 } {
   const StoreContext = createContext<TStore | null>(null);
 
@@ -111,8 +119,25 @@ export function create<
     return store.dispatch;
   }
 
+  /**
+   * Bind a collection of action creators to the dispatch function from the
+   * current context. Like `mapDispatchToProps` from react-redux.
+   */
+  const useBoundActionCreators = <T extends ActionCreatorsMapObject>(
+    actions: T,
+  ): DispatchMap<T> => {
+    const dispatch = useDispatch();
+    const map: {[key: string]: Function} = {};
+    for (const key in actions) {
+      const ac = actions[key];
+      map[key] = (...args: InferArgs<typeof ac>) => dispatch(ac(...args));
+    }
+    return map as DispatchMap<T>;
+  };
+
   return {
     StoreContext,
+    useBoundActionCreators,
     useDispatch,
     useMappedState,
   };

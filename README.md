@@ -15,6 +15,7 @@
   - [`StoreContext`](#storecontext)
   - [`useMappedState(mapState)`](#usemappedstatemapstate)
   - [`useDispatch()`](#usedispatch)
+  - [`useMappedDispatch(mapDispatch)`](#usemappeddispatchmapdispatch)
 - [Example](#example)
 - [FAQ](#faq)
 - [More info](#more-info)
@@ -169,6 +170,28 @@ function DeleteButton({index}) {
   return <button onClick={deleteTodo}>x</button>;
 }
 ```
+
+### `useBoundActionCreators(actionCreators)`
+
+Given a plain JavaScript object with action creators as values, returns an object with the same keys as the input object with functions that dispatch actions created with the original action creators into the store.
+
+```tsx
+import {useBoundActionCreators} from 'redux-react-hook';
+import {refresh, otherAction} from './actions';
+
+function DeleteButton({index}) {
+  const {refresh, otherAction} = useBoundActionCreators({refresh, otherAction});
+
+  return (
+    <>
+      <button onClick={refresh}>x</button>
+      <button onClick={otherAction}>y</button>
+    </>
+  );
+}
+```
+
+This essentially combines `useDispatch` and `useCallback` into one hook which can bind many action creators all at once.
 
 ### `create()`
 
