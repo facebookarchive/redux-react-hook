@@ -214,7 +214,7 @@ describe('redux-react-hook', () => {
       updateStore({...state, foo: 'foo'});
 
       // mapState is called during and after the first render
-      expect(mapStateCalls).toBe(2);
+      expect(mapStateCalls).toBe(1);
       expect(consoleErrorSpy).not.toHaveBeenCalled();
     });
 
@@ -316,7 +316,40 @@ describe('redux-react-hook', () => {
       // mapState called twice on subscription:
       // 1. Pull data on initial render
       // 2. Pull data before right before subscribing in useEffect
-      expect(mapStateCalls).toBe(2);
+      expect(mapStateCalls).toBe(1);
+    });
+
+    it('memoizes mapState by default', () => {
+      let mapStateCallsMemoized = 0;
+
+      const ComponentMemoizeMapState = () => {
+        const mapState = React.useCallback((s: IState) => {
+          mapStateCallsMemoized++;
+          return s.foo;
+        }, []);
+        const foo = useMappedState(mapState);
+        return <div>{foo}</div>;
+      };
+
+      let mapStateCallsNotMemoized = 0;
+
+      const ComponentNotMemoizeMapState = () => {
+        const mapState = React.useCallback((s: IState) => {
+          mapStateCallsNotMemoized++;
+          return s.foo;
+        }, []);
+        const foo = useMappedState(mapState, false);
+        return <div>{foo}</div>;
+      };
+
+      render(<ComponentMemoizeMapState />);
+      render(<ComponentMemoizeMapState />);
+
+      render(<ComponentNotMemoizeMapState />);
+      render(<ComponentNotMemoizeMapState />);
+
+      expect(mapStateCallsMemoized).toBe(1);
+      expect(mapStateCallsNotMemoized).toBe(3);
     });
   });
 

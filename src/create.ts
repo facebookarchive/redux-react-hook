@@ -20,6 +20,19 @@ class MissingProviderError extends Error {
   }
 }
 
+function memoize<AT, RT>(fn: (arg: AT) => RT): (arg: AT) => RT {
+  let value: RT;
+  let prevArg: AT;
+
+  return (arg: AT) => {
+    if (prevArg !== arg) {
+      prevArg = arg;
+      value = fn(arg);
+    }
+    return value;
+  };
+}
+
 /**
  * To use redux-react-hook with stronger type safety, or to use with multiple
  * stores in the same app, create() your own instance and re-export the returned
@@ -31,7 +44,10 @@ export function create<
   TStore extends Store<TState, TAction>
 >(): {
   StoreContext: React.Context<TStore | null>;
-  useMappedState: <TResult>(mapState: (state: TState) => TResult) => TResult;
+  useMappedState: <TResult>(
+    mapState: (state: TState) => TResult,
+    shouldMemoize?: Boolean,
+  ) => TResult;
   useDispatch: () => Dispatch<TAction>;
 } {
   const StoreContext = createContext<TStore | null>(null);
@@ -49,25 +65,22 @@ export function create<
    */
   function useMappedState<TResult>(
     mapState: (state: TState) => TResult,
+    shouldMemoize: Boolean = true,
   ): TResult {
     const store = useContext(StoreContext);
     if (!store) {
       throw new MissingProviderError();
     }
 
-    const state = store.getState();
-    const derivedState = useMemo(() => mapState(state), [state, mapState]);
-
-    if (process.env.NODE_ENV === 'development') {
-      const derivedStateCheck = mapState(state);
-      if (!shallowEqual(derivedStateCheck, derivedState)) {
-        console.warn(
-          'Your mapState function returns a different value ' +
-            'if called with the same state. ' +
-            'You should consider memoizing the mapState.',
-        );
+    const memoizedMapState = useMemo(() => {
+      if (shouldMemoize) {
+        return memoize(mapState);
       }
-    }
+      return mapState;
+    }, [mapState, shouldMemoize]);
+
+    const state = store.getState();
+    const derivedState = memoizedMapState(state);
 
     const [, setUpdates] = useState(0);
 
@@ -89,7 +102,7 @@ export function create<
           return;
         }
 
-        const newDerivedState = mapState(store.getState());
+        const newDerivedState = memoizedMapState(store.getState());
 
         if (!shallowEqual(newDerivedState, lastStateRef.current)) {
           setUpdates(updates => updates + 1);
@@ -109,7 +122,7 @@ export function create<
         didUnsubscribe = true;
         unsubscribe();
       };
-    }, [store, mapState]);
+    }, [store, memoizedMapState]);
 
     return derivedState;
   }
