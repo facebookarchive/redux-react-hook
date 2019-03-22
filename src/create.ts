@@ -65,19 +65,13 @@ export function create<
    */
   function useMappedState<TResult>(
     mapState: (state: TState) => TResult,
-    shouldMemoize: Boolean = true,
   ): TResult {
     const store = useContext(StoreContext);
     if (!store) {
       throw new MissingProviderError();
     }
 
-    const memoizedMapState = useMemo(() => {
-      if (shouldMemoize) {
-        return memoize(mapState);
-      }
-      return mapState;
-    }, [mapState, shouldMemoize]);
+    const memoizedMapState = useMemo(() => memoize(mapState), [mapState]);
 
     const state = store.getState();
     const derivedState = memoizedMapState(state);
