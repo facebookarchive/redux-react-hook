@@ -15,7 +15,7 @@
   - [`StoreContext`](#storecontext)
   - [`useMappedState(mapState)`](#usemappedstatemapstate)
   - [`useDispatch()`](#usedispatch)
-  - [`useMappedDispatch(mapDispatch)`](#usemappeddispatchmapdispatch)
+  - [`useBoundActionCreators(mapDispatch)`](#useboundactioncreatorsmapdispatch)
 - [Example](#example)
 - [FAQ](#faq)
 - [More info](#more-info)
