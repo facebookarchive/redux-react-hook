@@ -128,10 +128,10 @@ export function create<
   ): DispatchMap<T> => {
     const dispatch = useDispatch();
     const map: {[key: string]: Function} = {};
-    for (const key in actions) {
+    Object.keys(actions).forEach((key) => {
       const ac = actions[key];
       map[key] = (...args: InferArgs<typeof ac>) => dispatch(ac(...args));
-    }
+    });
     return map as DispatchMap<T>;
   };
 
