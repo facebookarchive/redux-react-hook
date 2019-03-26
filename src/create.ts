@@ -4,7 +4,11 @@ import {createContext, useContext, useEffect, useRef, useState} from 'react';
 import {Action, ActionCreatorsMapObject, Dispatch, Store} from 'redux';
 import shallowEqual from './shallowEqual';
 
-type InferArgs<F> = F extends (...args: infer T) => unknown ? T : never;
+type InferArgs<F> = F extends () => unknown
+  ? never[]
+  : F extends (...args: infer T) => unknown
+    ? T
+    : never;
 export type DispatchMap<T> = {
   [K in keyof T]: (...args: InferArgs<T[K]>) => void
 };

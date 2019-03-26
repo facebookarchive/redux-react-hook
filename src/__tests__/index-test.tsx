@@ -319,20 +319,23 @@ describe('redux-react-hook', () => {
     it('calls store dispatch', () => {
       const ac1 = (arg: string) => arg;
       const ac2 = (a: number, b: number) => ({a, b});
+      const ac3 = () => 'ac3';
       const Component = () => {
-        const dispatch = useBoundActionCreators({ac1, ac2});
+        const dispatch = useBoundActionCreators({ac1, ac2, ac3});
         React.useEffect(() => {
           dispatch.ac1('foo');
           dispatch.ac2(3, 4);
+          dispatch.ac3();
         });
         return null;
       };
 
       render(<Component />);
 
-      expect(store.dispatch).toHaveBeenCalledTimes(2);
+      expect(store.dispatch).toHaveBeenCalledTimes(3);
       expect(store.dispatch).toHaveBeenCalledWith('foo');
-      expect(store.dispatch).toHaveBeenLastCalledWith({a: 3, b: 4});
+      expect(store.dispatch).toHaveBeenCalledWith({a: 3, b: 4});
+      expect(store.dispatch).toHaveBeenLastCalledWith('ac3');
     });
 
     it('calls store dispatch (inline action creators)', () => {
@@ -340,19 +343,21 @@ describe('redux-react-hook', () => {
         const dispatch = useBoundActionCreators({
           ac1: (arg: string) => arg,
           ac2: (a: number, b: number) => ({a, b}),
+          ac3: () => 'ac3',
         });
         React.useEffect(() => {
           dispatch.ac1('foo');
           dispatch.ac2(3, 4);
+          dispatch.ac3();
         });
         return null;
       };
 
       render(<Component />);
 
-      expect(store.dispatch).toHaveBeenCalledTimes(2);
-      expect(store.dispatch).toHaveBeenCalledWith('foo');
-      expect(store.dispatch).toHaveBeenLastCalledWith({a: 3, b: 4});
+      expect(store.dispatch).toHaveBeenCalledTimes(3);
+      expect(store.dispatch).toHaveBeenCalledWith({a: 3, b: 4});
+      expect(store.dispatch).toHaveBeenLastCalledWith('ac3');
     });
   });
 
