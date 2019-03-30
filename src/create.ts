@@ -82,6 +82,11 @@ export function create<
     // an update when derived state changes.
     const [, forceUpdate] = useReducer(x => x + 1, 0);
 
+    // Keep previously commited derived state in a ref.
+    // Compare it to the a one when an action is dispatched
+    // and call forceUpdate if they are different.
+    // We could rely on React's bail out it makes a component
+    // render which is not necessary in that case.
     const lastStateRef = useRef(derivedState);
 
     useEffect(() => {
