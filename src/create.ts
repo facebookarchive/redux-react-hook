@@ -4,9 +4,9 @@ import {
   createContext,
   useContext,
   useEffect,
-  useRef,
-  useState,
   useMemo,
+  useReducer,
+  useRef,
 } from 'react';
 import {Action, Dispatch, Store} from 'redux';
 import shallowEqual from './shallowEqual';
@@ -20,7 +20,7 @@ class MissingProviderError extends Error {
   }
 }
 
-function memoize<AT, RT>(fn: (arg: AT) => RT): (arg: AT) => RT {
+function memoizeSingleArg<AT, RT>(fn: (arg: AT) => RT): (arg: AT) => RT {
   let value: RT;
   let prevArg: AT;
 
@@ -44,10 +44,7 @@ export function create<
   TStore extends Store<TState, TAction>
 >(): {
   StoreContext: React.Context<TStore | null>;
-  useMappedState: <TResult>(
-    mapState: (state: TState) => TResult,
-    shouldMemoize?: Boolean,
-  ) => TResult;
+  useMappedState: <TResult>(mapState: (state: TState) => TResult) => TResult;
   useDispatch: () => Dispatch<TAction>;
 } {
   const StoreContext = createContext<TStore | null>(null);
@@ -71,12 +68,19 @@ export function create<
       throw new MissingProviderError();
     }
 
-    const memoizedMapState = useMemo(() => memoize(mapState), [mapState]);
+    // We don't keep the derived state but call mapState on every render with current state.
+    // This approach guarantees that useMappedState returns up-to-date derived state.
+    // Since mapState can be expensive and must be a pure function of state we memoize it.
+    const memoizedMapState = useMemo(() => memoizeSingleArg(mapState), [
+      mapState,
+    ]);
 
     const state = store.getState();
     const derivedState = memoizedMapState(state);
 
-    const [, setUpdates] = useState(0);
+    // Since we don't keep the derived state we still need to trigger
+    // an update when derived state changes.
+    const [, forceUpdate] = useReducer(x => x + 1, 0);
 
     const lastStateRef = useRef(derivedState);
 
@@ -99,7 +103,8 @@ export function create<
         const newDerivedState = memoizedMapState(store.getState());
 
         if (!shallowEqual(newDerivedState, lastStateRef.current)) {
-          setUpdates(updates => updates + 1);
+          // In TS definitions userReducer's dispatch requires an argument
+          (forceUpdate as () => void)();
         }
       };
 
