@@ -214,7 +214,7 @@ describe('redux-react-hook', () => {
       updateStore({...state, foo: 'foo'});
 
       // mapState is called during and after the first render
-      expect(mapStateCalls).toBe(2);
+      expect(mapStateCalls).toBe(1);
       expect(consoleErrorSpy).not.toHaveBeenCalled();
     });
 
@@ -255,9 +255,7 @@ describe('redux-react-hook', () => {
       const Component = ({prop}: {prop: any}) => {
         const mapState = React.useCallback((s: IState) => s, [prop]);
         useMappedState(mapState);
-        React.useEffect(() => {
-          renderCount++;
-        });
+        renderCount++;
         return null;
       };
 
@@ -278,6 +276,47 @@ describe('redux-react-hook', () => {
       act(() => {
         ReactDOM.render(<Component />, reactRoot);
       });
+    });
+
+    it('does not provide stale mapped state', () => {
+      let flag = false;
+
+      const Component = ({prop}: {prop: any}) => {
+        const mapState = React.useCallback((s: IState) => s[prop], [prop]);
+        const mappedState = useMappedState(mapState);
+        if (state[prop] !== mappedState) {
+          flag = true;
+        }
+        return null;
+      };
+
+      render(<Component prop="foo" />);
+      render(<Component prop="bar" />);
+
+      expect(flag).toBe(false);
+    });
+
+    it("doesn't call mapState too often", () => {
+      let mapStateCalls = 0;
+
+      const Component = () => {
+        const mapState = React.useCallback((s: IState) => {
+          mapStateCalls++;
+          return s.foo;
+        }, []);
+        const foo = useMappedState(mapState);
+        return <div>{foo}</div>;
+      };
+
+      render(<Component />);
+      render(<Component />);
+      render(<Component />);
+      render(<Component />);
+
+      // mapState called twice on subscription:
+      // 1. Pull data on initial render
+      // 2. Pull data before right before subscribing in useEffect
+      expect(mapStateCalls).toBe(1);
     });
   });
 

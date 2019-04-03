@@ -1,6 +1,13 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
-import {createContext, useContext, useEffect, useRef, useState} from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+} from 'react';
 import {Action, Dispatch, Store} from 'redux';
 import shallowEqual from './shallowEqual';
 
@@ -11,6 +18,19 @@ class MissingProviderError extends Error {
         'context via the <StoreContext.Provider>',
     );
   }
+}
+
+function memoizeSingleArg<AT, RT>(fn: (arg: AT) => RT): (arg: AT) => RT {
+  let value: RT;
+  let prevArg: AT;
+
+  return (arg: AT) => {
+    if (prevArg !== arg) {
+      prevArg = arg;
+      value = fn(arg);
+    }
+    return value;
+  };
 }
 
 /**
@@ -47,28 +67,31 @@ export function create<
     if (!store) {
       throw new MissingProviderError();
     }
-    const runMapState = () => mapState(store.getState());
 
-    const [derivedState, setDerivedState] = useState(runMapState);
+    // We don't keep the derived state but call mapState on every render with current state.
+    // This approach guarantees that useMappedState returns up-to-date derived state.
+    // Since mapState can be expensive and must be a pure function of state we memoize it.
+    const memoizedMapState = useMemo(() => memoizeSingleArg(mapState), [
+      mapState,
+    ]);
 
-    const lastStore = useRef(store);
-    const lastMapState = useRef(mapState);
+    const state = store.getState();
+    const derivedState = memoizedMapState(state);
 
-    const wrappedSetDerivedState = () => {
-      const newDerivedState = runMapState();
-      setDerivedState(lastDerivedState =>
-        shallowEqual(newDerivedState, lastDerivedState)
-          ? lastDerivedState
-          : newDerivedState,
-      );
-    };
+    // Since we don't keep the derived state we still need to trigger
+    // an update when derived state changes.
+    const [, forceUpdate] = useReducer(x => x + 1, 0);
 
-    // If the store or mapState change, rerun mapState
-    if (lastStore.current !== store || lastMapState.current !== mapState) {
-      lastStore.current = store;
-      lastMapState.current = mapState;
-      wrappedSetDerivedState();
-    }
+    // Keep previously commited derived state in a ref.
+    // Compare it to the a one when an action is dispatched
+    // and call forceUpdate if they are different.
+    // We could rely on React's bail out it makes a component
+    // render which is not necessary in that case.
+    const lastStateRef = useRef(derivedState);
+
+    useEffect(() => {
+      lastStateRef.current = derivedState;
+    });
 
     useEffect(() => {
       let didUnsubscribe = false;
@@ -82,7 +105,12 @@ export function create<
           return;
         }
 
-        wrappedSetDerivedState();
+        const newDerivedState = memoizedMapState(store.getState());
+
+        if (!shallowEqual(newDerivedState, lastStateRef.current)) {
+          // In TS definitions userReducer's dispatch requires an argument
+          (forceUpdate as () => void)();
+        }
       };
 
       // Pull data from the store after first render in case the store has
@@ -98,7 +126,7 @@ export function create<
         didUnsubscribe = true;
         unsubscribe();
       };
-    }, [store, mapState]);
+    }, [store, memoizedMapState]);
 
     return derivedState;
   }
