@@ -318,6 +318,18 @@ describe('redux-react-hook', () => {
       // 2. Pull data before right before subscribing in useEffect
       expect(mapStateCalls).toBe(1);
     });
+
+    it("doesn't resubscribe if mapState changes", () => {
+      const Component = ({prop}: {prop: any}) => {
+        useMappedState(React.useCallback(() => {}, [prop]));
+        return null;
+      };
+
+      render(<Component prop={1} />);
+      render(<Component prop={2} />);
+
+      expect(store.subscribe).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('useDispatch', () => {
