@@ -1,5 +1,14 @@
 # Changelog for redux-react-hook
 
+## v3.3.0
+
+Apr 5, 2019
+
+- Simplify implementation, avoiding stale reads (thanks @Turanchoks!)
+- Remove `prop-type` as a `peerDependency`
+- Hand role TypeScript types to work around issues with create-react-app
+- Add Flow types to distributed build
+
 ## v3.2.1
 
 Mar 13, 2019
@@ -11,7 +20,7 @@ Mar 13, 2019
 Feb 21, 2019
 
 - Avoid double render if new mapState returns same mappedState (thanks @Turanchoks!)
-- Add create function for better typing (@thanks nmn!)
+- Add create function for better typing (thanks @nmn!)
 
 ## v3.1.0
 
