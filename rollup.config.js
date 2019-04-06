@@ -48,9 +48,9 @@ export default {
         files: ['src/index.ts', 'src/create.ts', 'src/shallowEqual.ts'],
         dest: 'example/src/redux-react-hook/',
       },
-      // Copy over the manually created d.ts file
+      // Copy over the manually created type file
       {
-        files: ['src/index.d.ts'],
+        files: ['src/index.d.ts', 'src/index.js.flow'],
         dest: 'dist/',
       },
     ]),
