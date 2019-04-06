@@ -48,6 +48,11 @@ export default {
         files: ['src/index.ts', 'src/create.ts', 'src/shallowEqual.ts'],
         dest: 'example/src/redux-react-hook/',
       },
+      // Copy over the manually created d.ts file
+      {
+        files: ['src/index.d.ts'],
+        dest: 'dist/',
+      },
     ]),
   ],
 };
