@@ -86,8 +86,11 @@ export function create<
     // one when an action is dispatched and call forceUpdate if they are different.
     const lastStateRef = useRef(derivedState);
 
+    const memoizedMapStateRef = useRef(memoizedMapState);
+
     useEffect(() => {
       lastStateRef.current = derivedState;
+      memoizedMapStateRef.current = memoizedMapState;
     });
 
     useEffect(() => {
@@ -102,7 +105,7 @@ export function create<
           return;
         }
 
-        const newDerivedState = memoizedMapState(store.getState());
+        const newDerivedState = memoizedMapStateRef.current(store.getState());
 
         if (!shallowEqual(newDerivedState, lastStateRef.current)) {
           // In TS definitions userReducer's dispatch requires an argument
@@ -123,7 +126,7 @@ export function create<
         didUnsubscribe = true;
         unsubscribe();
       };
-    }, [store, memoizedMapState]);
+    }, [store]);
 
     return derivedState;
   }
