@@ -1,5 +1,11 @@
 # Changelog for redux-react-hook
 
+## v3.3.1
+
+Apr 8, 2019
+
+- Don't resubscribe if `mapState` changes (thanks @Turanchoks)
+
 ## v3.3.0
 
 Apr 5, 2019
