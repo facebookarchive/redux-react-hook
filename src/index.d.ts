@@ -14,15 +14,16 @@ import {Action, Dispatch, Store} from 'redux';
 export declare function create<
   TState,
   TAction extends Action,
-  TStore extends Store<TState, TAction>
+  TStore extends Store<TState, TAction>,
+  TDispatch = Dispatch<TAction>
 >(): {
   StoreContext: React.Context<TStore | null>;
   useMappedState: <TResult>(mapState: (state: TState) => TResult) => TResult;
-  useDispatch: () => Dispatch<TAction>;
+  useDispatch: () => TDispatch
 };
 
 export declare const StoreContext: Context<any>;
-export declare const useDispatch: () => Dispatch<any>;
+export declare const useDispatch: <TDispatch = Dispatch<any>>() => TDispatch;
 
 /**
  * Your passed in mapState function should be memoized with useCallback to avoid
