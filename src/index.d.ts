@@ -19,7 +19,7 @@ export declare function create<
 >(): {
   StoreContext: React.Context<TStore | null>;
   useMappedState: <TResult>(mapState: (state: TState) => TResult) => TResult;
-  useDispatch: () => TDispatch
+  useDispatch: () => TDispatch;
 };
 
 export declare const StoreContext: Context<any>;
