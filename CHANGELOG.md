@@ -1,5 +1,12 @@
 # Changelog for redux-react-hook
 
+## v3.3.2
+
+Apr 29, 2019
+
+- TypeScript types: allow custom dispatch type (thanks @zebrallel)
+- Flow types: clean up after actual usage
+
 ## v3.3.1
 
 Apr 8, 2019
