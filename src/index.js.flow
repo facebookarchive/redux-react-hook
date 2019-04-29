@@ -1,7 +1,15 @@
-// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+/**
+ * Copyright 2004-present Facebook. All Rights Reserved.
+ *
+ * @flow strict-local
+ */
 
-import {Context} from 'react';
-import {Action, Dispatch, Store} from 'redux';
+import type {Context} from 'react';
+import type {Dispatch, Store} from 'redux';
+
+// This comes straight from the Redux types.
+// flowlint-next-line unclear-type: off
+type ActionType = { +type: string & any };
 
 /**
  * To use redux-react-hook with stronger type safety, or to use with multiple
@@ -10,16 +18,20 @@ import {Action, Dispatch, Store} from 'redux';
  */
 declare export function create<
   TState,
-  TAction: Action,
-  TStore: Store<TState, TAction>
->(): {
-  StoreContext: React.Context<TStore | null>;
-  useMappedState: <TResult>(mapState: (state: TState) => TResult) => TResult;
-  useDispatch: () => Dispatch<TAction>;
-};
+  TAction: ActionType,
+  TDispatch,
+  TStore: Store<TState, TAction, TDispatch>,
+>(): {|
+  +StoreContext: Context<?TStore>;
+  +useMappedState: <TResult>(mapState: (state: TState) => TResult) => TResult;
+  +useDispatch: () => TDispatch;
+|};
 
+// This is a module variable, so it cannot be typed generic.
+// flowlint-next-line unclear-type: off
 declare export var StoreContext: Context<any>;
-declare export function useDispatch(): Dispatch<any>;
+
+declare export function useDispatch<TDispatch>(): TDispatch;
 
 /**
  * Your passed in mapState function should be memoized with useCallback to avoid
@@ -32,6 +44,6 @@ declare export function useDispatch(): Dispatch<any>;
  *   [id],
  * ));
  */
-declare export function useMappedState<TResult>(
-  mapState: (state: any) => TResult,
+declare export function useMappedState<TState, TResult>(
+  mapState: (state: TState) => TResult,
 ): TResult;
