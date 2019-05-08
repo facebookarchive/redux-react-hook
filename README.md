@@ -216,6 +216,10 @@ yarn start
 
 ## FAQ
 
+### Is it typed with TypeScript/Flow?
+
+One of the nice benefits of using hooks is that they are easier to type and less prone to trouble than higher-order components, especially when you are using multiple hooks (vs multiple HOCs). `redux-react-hook` comes with both [TypeScript definitions](https://github.com/facebookincubator/redux-react-hook/blob/master/src/index.d.ts) and [Flow types](https://github.com/facebookincubator/redux-react-hook/blob/master/src/index.js.flow), both of which should work out of the box when installing with npm/yarn.
+
 ### How does this compare to React Redux?
 
 `redux-react-hook` has not been battle and perf-tested, so we don't recommend replacing [`react-redux`](https://github.com/reduxjs/react-redux) just yet. React Redux also guarantees that [data flows top down](https://medium.com/@kj_huang/implementation-of-react-redux-part-2-633441bd3306), so that child components update after their parents, which the hook does not.
