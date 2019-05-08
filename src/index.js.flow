@@ -2,6 +2,7 @@
  * Copyright 2004-present Facebook. All Rights Reserved.
  *
  * @flow strict-local
+ * @format
  */
 
 import type {Context} from 'react';
@@ -9,7 +10,18 @@ import type {Dispatch, Store} from 'redux';
 
 // This comes straight from the Redux types.
 // flowlint-next-line unclear-type: off
-type ActionType = { +type: string & any };
+type ActionType = {+type: string & any};
+
+export type ReduxReactHooks<
+  TState,
+  TAction: ActionType,
+  TDispatch,
+  TStore: Store<TState, TAction, TDispatch>,
+> = {|
+  +StoreContext: Context<?TStore>,
+  +useMappedState: <TResult>(mapState: (state: TState) => TResult) => TResult,
+  +useDispatch: () => TDispatch,
+|};
 
 /**
  * To use redux-react-hook with stronger type safety, or to use with multiple
@@ -21,11 +33,7 @@ declare export function create<
   TAction: ActionType,
   TDispatch,
   TStore: Store<TState, TAction, TDispatch>,
->(): {|
-  +StoreContext: Context<?TStore>;
-  +useMappedState: <TResult>(mapState: (state: TState) => TResult) => TResult;
-  +useDispatch: () => TDispatch;
-|};
+>(): ReduxReactHooks<TState, TAction, TDispatch, TStore>;
 
 // This is a module variable, so it cannot be typed generic.
 // flowlint-next-line unclear-type: off
