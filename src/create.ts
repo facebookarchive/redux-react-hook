@@ -3,13 +3,21 @@
 import {
   createContext,
   useContext,
-  useEffect,
   useMemo,
   useReducer,
   useRef,
+  useLayoutEffect,
+  useEffect,
 } from 'react';
 import {Action, Dispatch, Store} from 'redux';
 import shallowEqual from './shallowEqual';
+
+// React currently throws a warning when using useLayoutEffect on the server.
+// To get around it, we can conditionally useEffect on the server (no-op) and
+// useLayoutEffect in the browser.
+
+const useIsomorphicLayoutEffect =
+  typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
 class MissingProviderError extends Error {
   constructor() {
@@ -88,12 +96,23 @@ export function create<
 
     const memoizedMapStateRef = useRef(memoizedMapState);
 
-    useEffect(() => {
+
+    // We use useLayoutEffect to render once if we have multiple useMappedState. 
+    // We need to update lastStateRef synchronously after rendering component,
+    // With useEffect we would have:
+    // 1) dispatch action
+    // 2) call subscription cb in useMappedState1, call forceUpdate
+    // 3) rerender component
+    // 4) call useMappedState1 and useMappedState2 code
+    // 5) calc new derivedState in useMappedState2, schedule updating lastStateRef, return new state, render component
+    // 6) call subscription cb in useMappedState2, check if lastStateRef !== newDerivedState, call forceUpdate, rerender.
+    // 7) update lastStateRef - it's too late, we already made one unnecessary render
+    useIsomorphicLayoutEffect(() => {
       lastStateRef.current = derivedState;
       memoizedMapStateRef.current = memoizedMapState;
     });
 
-    useEffect(() => {
+    useIsomorphicLayoutEffect(() => {
       let didUnsubscribe = false;
 
       // Run the mapState callback and if the result has changed, make the

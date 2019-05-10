@@ -16,7 +16,7 @@ interface IState {
 }
 
 describe('redux-react-hook', () => {
-  let subscriberCallback: (() => void) | null;
+  let subscriberCallbacks: Array<() => void> = [];
   let state: IState;
   let cancelSubscription: () => void;
   let store: Store<IState, IAction>;
@@ -26,19 +26,23 @@ describe('redux-react-hook', () => {
     dispatch: jest.fn(action => action),
     getState: () => state,
     subscribe: jest.fn((l: () => void) => {
-      subscriberCallback = l;
+      subscriberCallbacks.push(l);
       return cancelSubscription;
     }),
     // tslint:disable-next-line:no-empty
     replaceReducer() {},
   });
 
-  function updateStore(newState: IState) {
+  function updateStoreWithoutAct(newState: IState) {
     state = newState;
+    for (const sub of subscriberCallbacks) {
+      sub();
+    }
+  }
+
+  function updateStore(newState: IState) {
     act(() => {
-      if (subscriberCallback) {
-        subscriberCallback();
-      }
+      updateStoreWithoutAct(newState);
     });
   }
 
@@ -53,7 +57,7 @@ describe('redux-react-hook', () => {
 
   afterEach(() => {
     document.body.removeChild(reactRoot);
-    subscriberCallback = null;
+    subscriberCallbacks = [];
   });
 
   function render(element: React.ReactElement<any>) {
@@ -263,6 +267,25 @@ describe('redux-react-hook', () => {
       render(<Component prop={2} />);
 
       expect(renderCount).toBe(2);
+    });
+
+    it('renders once if have multiple useMappedState', () => {
+      let renderCount = 0;
+      const Component = ({prop}: {prop: any}) => {
+        const mapState1 = React.useCallback((s: IState) => s.bar, [prop]);
+        const mapState2 = React.useCallback((s: IState) => s.foo, [prop]);
+        useMappedState(mapState1);
+        useMappedState(mapState2);
+        renderCount++;
+        return null;
+      };
+
+      render(<Component prop={1} />);
+
+      updateStoreWithoutAct({bar: 11, foo: '11'});
+      updateStoreWithoutAct({bar: 12, foo: '12'});
+      act(() => {});
+      expect(renderCount).toBe(3);
     });
 
     it('throws if provider is missing', () => {
