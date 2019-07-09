@@ -17,7 +17,7 @@
   - [`useDispatch()`](#usedispatch)
 - [Example](#example)
 - [FAQ](#faq)
-- [More info](#more-info)
+- [Related projects](#related-projects)
 - [Thanks](#thanks)
 - [Contributing](#contributing)
 - [License](#license)
@@ -230,10 +230,30 @@ You're not memoizing the `mapState` function. Either declare it outside of your
 stateless functional component or wrap it in `useCallback` to avoid creating a
 new function every render.
 
-## More info
+### How can I use a selector creator, like in reselect?
 
-Hooks are really new, and we are just beginning to see what people do with them. There is an [open issue on `react-redux`](https://github.com/reduxjs/react-redux/issues/1063) discussing the potential. Here are some other projects that are adding hooks for Redux:
+If you want to [share a selector with props across multiple component instances](https://github.com/reduxjs/reselect#sharing-selectors-with-props-across-multiple-component-instances), create the selector in `useMemo` to ensure it has one copy per instance and use it directly in `useMappedState`.
 
+```tsx
+function TodoList({listID}) {
+  // useMemo will execute the function makeGetVisibleTodos once per component
+  const getVisibleTodos = useMemo(makeGetVisibleTodos, []);
+  const todos = useMappedState(
+    useCallback(
+      // Note that you shouldn't pass the entire props list, since every time
+      // useCallback is recreated, useMappedState will resubscribe
+      state => getVisibleTodos(state, {listID}), 
+      [listID],
+    ),
+  );
+}
+```
+
+## Related projects
+
+Here are some other projects that are adding hooks for Redux:
+
+- [React Redux](https://react-redux.js.org/api/hooks) has hooks in version 7.1 and above
 - [`use-substate`](https://github.com/philipp-spiess/use-substate)
 - [`react-use-redux`](https://github.com/martynaskadisa/react-use-redux)
 - [`react-use-dux`](https://github.com/richardpj/react-use-dux)
