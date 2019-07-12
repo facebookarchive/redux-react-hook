@@ -242,8 +242,8 @@ function TodoList({listID}) {
     useCallback(
       // Note that you shouldn't pass the entire props list, since every time
       // useCallback is recreated, useMappedState will resubscribe
-      state => getVisibleTodos(state, {listID}), 
-      [listID],
+      state => getVisibleTodos(state, {listID}),
+      [listID, getVisibleTodos],
     ),
   );
 }
