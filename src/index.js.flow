@@ -1,7 +1,7 @@
 /**
  * Copyright 2004-present Facebook. All Rights Reserved.
  *
- * @flow strict-local
+ * @flow
  * @format
  */
 
@@ -9,7 +9,6 @@ import type {Context} from 'react';
 import type {Dispatch, Store} from 'redux';
 
 // This comes straight from the Redux types.
-// flowlint-next-line unclear-type: off
 type ActionType = {+type: string & any};
 
 export type ReduxReactHooks<
@@ -36,7 +35,6 @@ declare export function create<
 >(): ReduxReactHooks<TState, TAction, TDispatch, TStore>;
 
 // This is a module variable, so it cannot be typed generic.
-// flowlint-next-line unclear-type: off
 declare export var StoreContext: Context<any>;
 
 declare export function useDispatch<TDispatch>(): TDispatch;
