@@ -223,9 +223,8 @@ describe('redux-react-hook', () => {
     });
 
     it('renders last state after synchronous dispatches', () => {
-      const store = createReduxStore(
-        (state: number = 0, action: any): number =>
-          action.type === 'test' ? action.payload : state,
+      const store = createReduxStore((state: number = 0, action: any): number =>
+        action.type === 'test' ? action.payload : state,
       );
 
       const mapState = (s: number) => s;

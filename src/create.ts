@@ -96,8 +96,7 @@ export function create<
 
     const memoizedMapStateRef = useRef(memoizedMapState);
 
-
-    // We use useLayoutEffect to render once if we have multiple useMappedState. 
+    // We use useLayoutEffect to render once if we have multiple useMappedState.
     // We need to update lastStateRef synchronously after rendering component,
     // With useEffect we would have:
     // 1) dispatch action
