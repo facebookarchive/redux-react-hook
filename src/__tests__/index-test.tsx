@@ -281,8 +281,12 @@ describe('redux-react-hook', () => {
 
       render(<Component prop={1} />);
 
-      updateStoreWithoutAct({bar: 11, foo: '11'});
-      updateStoreWithoutAct({bar: 12, foo: '12'});
+      // Supress the act error since we are purposely updating outside of act
+      suppressActError(() => {
+        updateStoreWithoutAct({bar: 11, foo: '11'});
+        updateStoreWithoutAct({bar: 12, foo: '12'});
+      });
+
       act(() => {});
       expect(renderCount).toBe(3);
     });
@@ -392,3 +396,17 @@ describe('redux-react-hook', () => {
     });
   });
 });
+
+function suppressActError(fn) {
+  const original = console.error;
+  console.error = (...args: any[]) => {
+    if (args.some(a => a.includes('act'))) {
+      return;
+    }
+    original(...args);
+  };
+
+  fn();
+
+  console.error = original;
+}
