@@ -3,11 +3,11 @@
 import {
   createContext,
   useContext,
-  useMemo,
-  useReducer,
-  useRef,
-  useLayoutEffect,
   useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
 } from 'react';
 import {Action, Dispatch, Store} from 'redux';
 import shallowEqual from './shallowEqual';
@@ -88,7 +88,7 @@ export function create<
 
     // Since we don't keep the derived state we still need to trigger
     // an update when derived state changes.
-    const [, forceUpdate] = useReducer(x => x + 1, 0);
+    const [, forceUpdate] = useState(0);
 
     // Keep previously commited derived state in a ref. Compare it to the new
     // one when an action is dispatched and call forceUpdate if they are different.
@@ -126,8 +126,7 @@ export function create<
         const newDerivedState = memoizedMapStateRef.current(store.getState());
 
         if (!shallowEqual(newDerivedState, lastStateRef.current)) {
-          // In TS definitions userReducer's dispatch requires an argument
-          (forceUpdate as () => void)();
+          forceUpdate(increment);
         }
       };
 
@@ -162,4 +161,8 @@ export function create<
     useDispatch,
     useMappedState,
   };
+}
+
+function increment(x: number): number {
+  return x + 1;
 }
