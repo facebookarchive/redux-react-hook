@@ -1,5 +1,11 @@
 # Changelog for redux-react-hook
 
+## v3.4.0
+
+Oct 15, 2019
+
+- useLayoutEffect to avoid unnecessary renders (thanks @goloveychuk!), fixing #73
+
 ## v3.3.2
 
 Apr 29, 2019
