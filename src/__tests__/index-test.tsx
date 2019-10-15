@@ -291,6 +291,33 @@ describe('redux-react-hook', () => {
       expect(renderCount).toBe(3);
     });
 
+    it('renders with latest state', () => {
+      let renderCount = 0;
+      const Component = ({prop}: {prop: any}) => {
+        const mapState1 = React.useCallback((s: IState) => s.bar, [prop]);
+        const mapState2 = React.useCallback((s: IState) => s.foo, [prop]);
+        const bar = useMappedState(mapState1);
+        const foo = useMappedState(mapState2);
+        renderCount++;
+        return (
+          <span>
+            {bar}
+            {foo}
+          </span>
+        );
+      };
+
+      render(<Component prop={1} />);
+
+      // Supress the act error since we are purposely updating outside of act
+      suppressActError(() => {
+        updateStoreWithoutAct({bar: 10, foo: '11'});
+        updateStoreWithoutAct({bar: 12, foo: '13'});
+      });
+
+      expect(getText()).toBe('1213');
+    });
+
     it('throws if provider is missing', () => {
       const Component = () => {
         const mapState = React.useCallback((s: IState) => s, []);
