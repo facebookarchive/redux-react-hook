@@ -24,6 +24,7 @@ function useTodo(index: number): {todo: string; deleteTodo: () => void} {
 
   const dispatch = useDispatch();
   const deleteTodo = useCallback(() => dispatch({type: 'delete todo', index}), [
+    dispatch,
     index,
   ]);
   return {todo, deleteTodo};
