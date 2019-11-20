@@ -318,6 +318,32 @@ describe('redux-react-hook', () => {
       expect(getText()).toBe('1213');
     });
 
+    it('renders when set changes', () => {
+      state = {bar: 123, foo: 'bar', set: new Set(['one'])};
+
+      let renderCount = 0;
+      const Component = ({prop}: {prop: any}) => {
+        const mapState = React.useCallback((s: IState) => s.set, [prop]);
+        const set = useMappedState(mapState);
+        renderCount++;
+        return (
+          <span>
+            {Array.from(set)[0]}
+          </span>
+        );
+      };
+
+      render(<Component prop={1} />);
+
+      // Supress the act error since we are purposely updating outside of act
+      suppressActError(() => {
+        updateStoreWithoutAct({bar: 123, foo: 'bar', set: new Set(['two'])});
+        updateStoreWithoutAct({bar: 123, foo: 'bar', set: new Set(['three'])});
+      });
+
+      expect(getText()).toBe('three');
+    });
+
     it('throws if provider is missing', () => {
       const Component = () => {
         const mapState = React.useCallback((s: IState) => s, []);
