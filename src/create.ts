@@ -10,7 +10,7 @@ import {
   useState,
 } from 'react';
 import {Action, Dispatch, Store} from 'redux';
-import { shallowEqual } from 'fast-equals';
+import {shallowEqual} from 'fast-equals';
 
 // React currently throws a warning when using useLayoutEffect on the server.
 // To get around it, we can conditionally useEffect on the server (no-op) and

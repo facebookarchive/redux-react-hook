@@ -326,11 +326,7 @@ describe('redux-react-hook', () => {
         const mapState = React.useCallback((s: IState) => s.set, [prop]);
         const set = useMappedState(mapState);
         renderCount++;
-        return (
-          <span>
-            {Array.from(set)[0]}
-          </span>
-        );
+        return <span>{Array.from(set)[0]}</span>;
       };
 
       render(<Component prop={1} />);
