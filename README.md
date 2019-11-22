@@ -13,8 +13,9 @@
 - [Quick Start](#quick-start)
 - [Usage](#usage)
   - [`StoreContext`](#storecontext)
-  - [`useMappedState(mapState)`](#usemappedstatemapstate)
+  - [`useMappedState(mapState, equalityCheck?)`](#usemappedstatemapstate)
   - [`useDispatch()`](#usedispatch)
+  - [`create(options?)`](#createoptions)
 - [Example](#example)
 - [FAQ](#faq)
 - [Related projects](#related-projects)
@@ -53,6 +54,7 @@ ReactDOM.render(
 // Individual components
 //
 import {useDispatch, useMappedState} from 'redux-react-hook';
+import shallowEqual from 'shallowequal';
 
 export function DeleteButton({index}) {
   // Declare your memoized mapState function
@@ -65,7 +67,7 @@ export function DeleteButton({index}) {
   );
 
   // Get data from and subscribe to the store
-  const {canDelete, name} = useMappedState(mapState);
+  const {canDelete, name} = useMappedState(mapState, shallowEqual);
 
   // Create actions
   const dispatch = useDispatch();
@@ -125,10 +127,13 @@ function Component() {
 }
 ```
 
-### `useMappedState(mapState)`
+### `useMappedState(mapState, equalityCheck?)`
 
-Runs the given `mapState` function against your store state, just like
-`mapStateToProps`.
+Runs the given `mapState` function against your store state, similar to
+`mapStateToProps`. Unlike `mapStateToProps`, however, the result of your
+`mapState` function is compared for reference equality (`===`) by default. To
+use shallow equal comparison, pass in a comparision function as the second
+parameter.
 
 ```tsx
 const state = useMappedState(mapState);
@@ -151,6 +156,27 @@ function TodoItem({index}) {
 
 If you don't have any inputs (the second argument to `useCallback`) pass an empty array `[]` so React uses the same function instance each render. You could also declare `mapState` outside of the function, but the React team does not recommend it, since the whole point of hooks is to allow you to keep everything in the component.
 
+The second parameter to `useMappedState` is used to determine if a new result from the `mapState` function is the same as the previous result, in which case your component will not be re-rendered. Prior to v4.0.0, this was hard-coded to a shallow equality check. Starting in v4.0.0, `equalityCheck` defaults to reference equality (using `===`). To restore the old behavior, which is particularly useful when you are returning an object, you can use the [`shallowequal`](https://www.npmjs.com/package/shallowequal) module:
+
+```tsx
+import {useMappedState} from 'redux-react-hook';
+import shallowEqual from 'shallowequal';
+
+function TodoItem({index}) {
+  // Note that we pass the index as a dependency parameter -- this causes
+  // useCallback to return the same function every time unless index changes.
+  const mapState = useCallback(state => ({
+    todo: state.todos[index],
+    totalCount: state.todos.length,
+  }), [index]);
+  const {todo, totalCount} = useMappedState(mapState, shallowEqual);
+
+  return <li>{todo}</li>;
+}
+```
+
+To avoid specifying the comparison function on every call to `useMappedState`, you can provide the defaultEqualityCheck option to [`create()`](#create). The `shallowEqual` function from [`fast-equals`](https://www.npmjs.com/package/fast-equals) is another good option, as it handles shallow comparisons of `Map`s and `Set`s as well as objects.
+
 NOTE: Every call to `useMappedState` will subscribe to the store. If the store updates, though, your component will only re-render once. So, calling `useMappedState` more than once (for example encapsulated inside a custom hook) should not have a large performance impact. If your measurements show a performance impact, you can switch to returning an object instead.
 
 ### `useDispatch()`
@@ -170,12 +196,13 @@ function DeleteButton({index}) {
 }
 ```
 
-### `create()`
+### `create(options?)`
 
 Creates an instance of Redux React Hooks with a new `StoreContext`. The above functions are just exports of the default instance. You may want to create your own instance if:
 
 1. You want better type safety without annotating every callsite. Creating your own instance ensures that the types are the same for all consumers. See the example for more info.
-2. You have multiple Redux stores (this is not common)
+2. You want to provide a default implementation of `equalityCheck` for all calls to `mapState`
+3. You have multiple Redux stores (this is not common)
 
 ```tsx
 // MyStoreHooks.js
@@ -196,6 +223,24 @@ export const {StoreContext, useDispatch, useMappedState} = create<
   Action,
   Store<IState, Action>
 >();
+```
+
+`create` takes an optional `options` object with the following options:
+- `defaultEqualityCheck` - the default implementation of `equalityCheck` to use in `useMappedState`, defaults to refence equality (`===`)
+
+To restore the pre v4.0.0 comparison behavior, for example:
+
+```tsx
+
+import {create} from 'redux-react-hook';
+import shallowEqual from 'shallow-equal';
+
+// Example in TypeScript where you have defined IState and Action
+export const {StoreContext, useDispatch, useMappedState} = create<
+  IState,
+  Action,
+  Store<IState, Action>
+>({defaultEqualityCheck: shallowEqual});
 ```
 
 ## Example
