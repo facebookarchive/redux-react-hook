@@ -156,7 +156,7 @@ function TodoItem({index}) {
 
 If you don't have any inputs (the second argument to `useCallback`) pass an empty array `[]` so React uses the same function instance each render. You could also declare `mapState` outside of the function, but the React team does not recommend it, since the whole point of hooks is to allow you to keep everything in the component.
 
-The second parameter to `useMappedState` is used to determine if a new result from the `mapState` function is the same as the previous result, in which case your component will not be re-rendered. Prior to v4.0.0, this was hard-coded to a shallow equality check. Starting in v4.0.0, `equalityCheck` defaults to reference equality (using `===`). To restore the old behavior, which is particularly useful when you are returning an object, you can use the [`shallowequal`](https://www.npmjs.com/package/shallowequal) module:
+The second parameter to `useMappedState` is used to determine if a new result from the `mapState` function is the same as the previous result, in which case your component will not be re-rendered. Prior to v4.0.1, this was hard-coded to a shallow equality check. Starting in v4.0.1, `equalityCheck` defaults to reference equality (using `===`). To restore the old behavior, which is particularly useful when you are returning an object, you can use the [`shallowequal`](https://www.npmjs.com/package/shallowequal) module:
 
 ```tsx
 import {useMappedState} from 'redux-react-hook';
@@ -232,7 +232,7 @@ export const {StoreContext, useDispatch, useMappedState} = create<
 
 - `defaultEqualityCheck` - the default implementation of `equalityCheck` to use in `useMappedState`, defaults to refence equality (`===`)
 
-To restore the pre v4.0.0 comparison behavior, for example:
+To restore the pre v4.0.1 comparison behavior, for example:
 
 ```tsx
 import {create} from 'redux-react-hook';

@@ -1,5 +1,11 @@
 # Changelog for redux-react-hook
 
+## v4.0.1
+
+Nov 25, 2019
+
+- Published without rebasing with new changes. Doh.
+
 ## v4.0.0
 
 Nov 25, 2019
