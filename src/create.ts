@@ -10,7 +10,6 @@ import {
   useState,
 } from 'react';
 import {Action, Dispatch, Store} from 'redux';
-import shallowEqual from './shallowEqual';
 
 // React currently throws a warning when using useLayoutEffect on the server.
 // To get around it, we can conditionally useEffect on the server (no-op) and
@@ -41,6 +40,10 @@ function memoizeSingleArg<AT, RT>(fn: (arg: AT) => RT): (arg: AT) => RT {
   };
 }
 
+function referenceEqual(a: unknown, b: unknown): boolean {
+  return a === b;
+}
+
 /**
  * To use redux-react-hook with stronger type safety, or to use with multiple
  * stores in the same app, create() your own instance and re-export the returned
@@ -50,9 +53,14 @@ export function create<
   TState,
   TAction extends Action,
   TStore extends Store<TState, TAction>
->(): {
+>({
+  defaultEqualityCheck = referenceEqual,
+}: {defaultEqualityCheck?: (a: unknown, b: unknown) => boolean} = {}): {
   StoreContext: React.Context<TStore | null>;
-  useMappedState: <TResult>(mapState: (state: TState) => TResult) => TResult;
+  useMappedState: <TResult>(
+    mapState: (state: TState) => TResult,
+    equalityCheck?: (a: TResult, b: TResult) => boolean,
+  ) => TResult;
   useDispatch: () => Dispatch<TAction>;
 } {
   const StoreContext = createContext<TStore | null>(null);
@@ -70,6 +78,7 @@ export function create<
    */
   function useMappedState<TResult>(
     mapState: (state: TState) => TResult,
+    equalityCheck: (a: TResult, b: TResult) => boolean = defaultEqualityCheck,
   ): TResult {
     const store = useContext(StoreContext);
     if (!store) {
@@ -125,7 +134,7 @@ export function create<
 
         const newDerivedState = memoizedMapStateRef.current(store.getState());
 
-        if (!shallowEqual(newDerivedState, lastStateRef.current)) {
+        if (!equalityCheck(newDerivedState, lastStateRef.current)) {
           forceUpdate(increment);
         }
       };

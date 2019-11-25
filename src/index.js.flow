@@ -18,8 +18,15 @@ export type ReduxReactHooks<
   TStore: Store<TState, TAction, TDispatch>,
 > = {|
   +StoreContext: Context<?TStore>,
-  +useMappedState: <TResult>(mapState: (state: TState) => TResult) => TResult,
+  +useMappedState: <TResult>(
+    mapState: (state: TState) => TResult,
+    equalityCheck?: (TResult, TResult) => boolean,
+  ) => TResult,
   +useDispatch: () => TDispatch,
+|};
+
+type CreateOptions = {|
+  defaultEqualityCheck?: (a: mixed, b: mixed) => boolean,
 |};
 
 /**
@@ -32,7 +39,7 @@ declare export function create<
   TAction: ActionType,
   TDispatch,
   TStore: Store<TState, TAction, TDispatch>,
->(): ReduxReactHooks<TState, TAction, TDispatch, TStore>;
+>(options?: CreateOptions): ReduxReactHooks<TState, TAction, TDispatch, TStore>;
 
 // This is a module variable, so it cannot be typed generic.
 declare export var StoreContext: Context<any>;
