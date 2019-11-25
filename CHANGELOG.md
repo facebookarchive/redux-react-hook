@@ -1,5 +1,11 @@
 # Changelog for redux-react-hook
 
+## v4.0.0
+
+Nov 25, 2019
+
+- Breaking Change: the default comparision for the return value of mapState has changed from shallow equality to reference equality. To restore the old behavior, pass a shallow equal comparison function to `create` (e.g. `create({defaultEqualityCheck: shallowEqual})`). The [`shallowequal`](https://www.npmjs.com/package/shallowequal) module is equivalent.
+
 ## v3.4.0
 
 Oct 15, 2019

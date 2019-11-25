@@ -13,7 +13,7 @@
 - [Quick Start](#quick-start)
 - [Usage](#usage)
   - [`StoreContext`](#storecontext)
-  - [`useMappedState(mapState, equalityCheck?)`](#usemappedstatemapstate)
+  - [`useMappedState(mapState, equalityCheck?)`](#usemappedstatemapstate-equalitycheck)
   - [`useDispatch()`](#usedispatch)
   - [`create(options?)`](#createoptions)
 - [Example](#example)
@@ -165,10 +165,13 @@ import shallowEqual from 'shallowequal';
 function TodoItem({index}) {
   // Note that we pass the index as a dependency parameter -- this causes
   // useCallback to return the same function every time unless index changes.
-  const mapState = useCallback(state => ({
-    todo: state.todos[index],
-    totalCount: state.todos.length,
-  }), [index]);
+  const mapState = useCallback(
+    state => ({
+      todo: state.todos[index],
+      totalCount: state.todos.length,
+    }),
+    [index],
+  );
   const {todo, totalCount} = useMappedState(mapState, shallowEqual);
 
   return <li>{todo}</li>;
@@ -226,12 +229,12 @@ export const {StoreContext, useDispatch, useMappedState} = create<
 ```
 
 `create` takes an optional `options` object with the following options:
+
 - `defaultEqualityCheck` - the default implementation of `equalityCheck` to use in `useMappedState`, defaults to refence equality (`===`)
 
 To restore the pre v4.0.0 comparison behavior, for example:
 
 ```tsx
-
 import {create} from 'redux-react-hook';
 import shallowEqual from 'shallow-equal';
 
