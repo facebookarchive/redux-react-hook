@@ -59,4 +59,5 @@ declare export function useDispatch<TDispatch>(): TDispatch;
  */
 declare export function useMappedState<TState, TResult>(
   mapState: (state: TState) => TResult,
+  equalityCheck?: (TResult, TResult) => boolean,
 ): TResult;
