@@ -32,33 +32,33 @@
     "redux": "^4.0.1"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.19",
-    "@types/node": "^12.7.12",
-    "@types/react": "^16.9.6",
-    "@types/react-dom": "^16.9.2",
+    "@types/jest": "^24.0.25",
+    "@types/node": "^13.1.2",
+    "@types/react": "^16.9.17",
+    "@types/react-dom": "^16.9.4",
     "babel-core": "^6.26.3",
     "babel-runtime": "^6.26.0",
     "cross-env": "^6.0.3",
     "gh-pages": "^2.1.1",
-    "prettier": "^1.18.2",
-    "react": "^16.10.2",
-    "react-dom": "^16.10.2",
-    "react-scripts": "^3.2.0",
-    "redux": "^4.0.4",
-    "rollup": "^1.24.0",
+    "prettier": "^1.19.1",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-scripts": "^3.3.0",
+    "redux": "^4.0.5",
+    "rollup": "^1.27.14",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-cpy": "^2.0.1",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-peer-deps-external": "^2.2.0",
-    "rollup-plugin-typescript2": "^0.24.3",
-    "rollup-plugin-url": "^3.0.0",
-    "typescript": "^3.6.4"
+    "rollup-plugin-typescript2": "^0.25.3",
+    "rollup-plugin-url": "^3.0.1",
+    "typescript": "^3.7.4"
   },
   "files": [
     "dist"
   ],
   "dependencies": {
-    "eslint": "^6.5.1"
+    "eslint": "^6.8.0"
   }
 }

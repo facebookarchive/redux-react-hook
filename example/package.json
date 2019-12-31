@@ -5,13 +5,13 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "@types/jest": "^24.0.19",
-    "@types/node": "^12.7.12",
-    "emotion": "^10.0.17",
-    "react": "^16.10.2",
-    "react-dom": "^16.10.2",
-    "react-scripts": "^3.2.0",
-    "redux": "^4.0.4"
+    "@types/jest": "^24.0.25",
+    "@types/node": "^13.1.2",
+    "emotion": "^10.0.27",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-scripts": "^3.3.0",
+    "redux": "^4.0.5"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -20,9 +20,9 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "@types/react": "^16.9.6",
-    "@types/react-dom": "^16.9.2",
-    "typescript": "^3.6.4"
+    "@types/react": "^16.9.17",
+    "@types/react-dom": "^16.9.4",
+    "typescript": "^3.7.4"
   },
   "browserslist": [
     ">0.2%",
