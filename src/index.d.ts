@@ -38,4 +38,5 @@ export declare const useDispatch: <TDispatch = Dispatch<any>>() => TDispatch;
  */
 export declare const useMappedState: <TResult>(
   mapState: (state: any) => TResult,
+  equalityCheck?: (a: any, b: any) => boolean,
 ) => TResult;
