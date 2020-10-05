@@ -33,8 +33,8 @@ function memoizeSingleArg<AT, RT>(fn: (arg: AT) => RT): (arg: AT) => RT {
 
   return (arg: AT) => {
     if (prevArg !== arg) {
-      prevArg = arg;
       value = fn(arg);
+      prevArg = arg;
     }
     return value;
   };
