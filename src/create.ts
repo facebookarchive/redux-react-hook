@@ -27,9 +27,14 @@ class MissingProviderError extends Error {
   }
 }
 
+// Init `prevArg` with a local object to ensure the first non-equality check
+// with `arg` always yield `true`, resulting in correctly calling `fn` and
+// assigning `arg` to `prevArg`.
+const initialPrevArg = {};
+
 function memoizeSingleArg<AT, RT>(fn: (arg: AT) => RT): (arg: AT) => RT {
   let value: RT;
-  let prevArg: AT;
+  let prevArg: AT | typeof initialPrevArg = initialPrevArg;
 
   return (arg: AT) => {
     if (prevArg !== arg) {
