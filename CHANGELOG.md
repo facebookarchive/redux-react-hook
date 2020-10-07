@@ -1,5 +1,19 @@
 # Changelog for redux-react-hook
 
+## v4.0.3
+
+Oct 7, 2020
+
+- Add equalityCheck to useMappedState TypeScript def (thanks @fredriksundin)
+- Fix memoize: save argument only if function does not throw (thanks @pauldijou)
+- Update dependency versions
+
+## v4.0.2
+
+Never published
+
+- Move `eslint` to a dev dependency (thanks @cpojer)
+
 ## v4.0.1
 
 Nov 25, 2019
