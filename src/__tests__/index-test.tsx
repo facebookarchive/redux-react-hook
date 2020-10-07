@@ -513,6 +513,29 @@ describe('redux-react-hook', () => {
       expect(getText()).toBe('constant 3');
     });
   });
+
+  describe('memoize', () => {
+    it('should not skip initial call even if initial state is undefined', () => {
+      const store = createReduxStore(() => {});
+
+      const mapState = (s: number | undefined) => s || 'empty';
+      const Component = () => {
+        const bar = useMappedState(mapState);
+        return <div>{bar}</div>;
+      };
+
+      act(() => {
+        ReactDOM.render(
+          <StoreContext.Provider value={store}>
+            <Component />
+          </StoreContext.Provider>,
+          reactRoot,
+        );
+      });
+
+      expect(getText()).toBe('empty');
+    });
+  });
 });
 
 function suppressActError(fn: () => void) {
