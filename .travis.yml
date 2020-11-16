@@ -1,9 +1,0 @@
-language: node_js
-node_js:
-  - '11.10.1'
-cache:
-  directories:
-    - node_modules
-script:
-  - yarn build
-  - yarn test
