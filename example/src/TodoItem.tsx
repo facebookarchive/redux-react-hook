@@ -1,9 +1,8 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
-import {css} from 'emotion';
-import React, {useCallback} from 'react';
-import {useDispatch, useMappedState} from './Store';
-import {IState} from './Store';
+import {css} from '@emotion/css';
+import {useCallback} from 'react';
+import {IState, useDispatch, useMappedState} from './Store';
 
 export default function TodoItem({index}: {index: number}) {
   const {todo, deleteTodo} = useTodo(index);
@@ -23,15 +22,16 @@ function useTodo(index: number): {todo: string; deleteTodo: () => void} {
   );
 
   const dispatch = useDispatch();
-  const deleteTodo = useCallback(() => dispatch({type: 'delete todo', index}), [
-    dispatch,
-    index,
-  ]);
+  const deleteTodo = useCallback(
+    () => dispatch({type: 'delete todo', index}),
+    [dispatch, index],
+  );
   return {todo, deleteTodo};
 }
 
 const styles = {
   root: css`
+    align-items: center;
     display: flex;
     justify-content: space-between;
     list-style-type: none;
@@ -42,12 +42,12 @@ const styles = {
       background-color: #efefef;
 
       button {
-        display: block;
+        opacity: 1;
       }
     }
 
     button {
-      display: none;
+      opacity: 0;
     }
   `,
 };

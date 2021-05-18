@@ -3,8 +3,8 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {act} from 'react-dom/test-utils';
-import {Store, createStore as createReduxStore, Observable} from 'redux';
-import {StoreContext, create, useDispatch, useMappedState} from '..';
+import {createStore as createReduxStore, Observable, Store} from 'redux';
+import {create, StoreContext, useDispatch, useMappedState} from '..';
 
 interface IAction {
   type: 'add todo';

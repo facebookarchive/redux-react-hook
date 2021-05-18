@@ -1,6 +1,6 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
-import {Action, IState, INITIAL_STATE} from './Store';
+import {Action, INITIAL_STATE, IState} from './Store';
 
 export default function reducer(state: IState = INITIAL_STATE, action: Action) {
   switch (action.type) {

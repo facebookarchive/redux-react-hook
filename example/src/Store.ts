@@ -33,8 +33,5 @@ export const INITIAL_STATE: IState = {
   ],
 };
 
-export const {StoreContext, useDispatch, useMappedState} = create<
-  IState,
-  Action,
-  Store<IState, Action>
->();
+export const {StoreContext, useDispatch, useMappedState} =
+  create<IState, Action, Store<IState, Action>>();

@@ -1,7 +1,7 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
-import {css} from 'emotion';
-import React, {useCallback} from 'react';
+import {css} from '@emotion/css';
+import {useCallback} from 'react';
 import {IState, useMappedState} from './Store';
 import TodoItem from './TodoItem';
 

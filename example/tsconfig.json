@@ -6,8 +6,11 @@
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
     "isolatedModules": true,
-    "jsx": "preserve",
-    "lib": ["es6", "dom"],
+    "jsx": "react-jsx",
+    "lib": [
+      "es6",
+      "dom"
+    ],
     "module": "esnext",
     "moduleResolution": "node",
     "noEmit": true,
@@ -23,7 +26,8 @@
     "strict": true,
     "strictNullChecks": true,
     "suppressImplicitAnyIndexErrors": true,
-    "target": "es5"
+    "target": "es5",
+    "noFallthroughCasesInSwitch": true
   },
   "exclude": [
     "acceptance-tests",
@@ -34,5 +38,7 @@
     "src/setupTests.ts",
     "webpack"
   ],
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }

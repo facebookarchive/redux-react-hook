@@ -1,7 +1,6 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
-import {css} from 'emotion';
-import React from 'react';
+import {css} from '@emotion/css';
 import TodoInput from './TodoInput';
 import TodoList from './TodoList';
 

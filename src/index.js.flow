@@ -5,9 +5,6 @@
  * @format
  */
 
-import type {Context} from 'react';
-import type {Dispatch, Store} from 'redux';
-
 // This comes straight from the Redux types.
 type ActionType = {+type: string & any};
 

@@ -7,7 +7,7 @@ import {
   useLayoutEffect,
   useMemo,
   useRef,
-  useState,
+  useState
 } from 'react';
 import {Action, Dispatch, Store} from 'redux';
 
@@ -57,7 +57,7 @@ function referenceEqual(a: unknown, b: unknown): boolean {
 export function create<
   TState,
   TAction extends Action,
-  TStore extends Store<TState, TAction>
+  TStore extends Store<TState, TAction>,
 >({
   defaultEqualityCheck = referenceEqual,
 }: {defaultEqualityCheck?: (a: unknown, b: unknown) => boolean} = {}): {
@@ -93,9 +93,10 @@ export function create<
     // We don't keep the derived state but call mapState on every render with current state.
     // This approach guarantees that useMappedState returns up-to-date derived state.
     // Since mapState can be expensive and must be a pure function of state we memoize it.
-    const memoizedMapState = useMemo(() => memoizeSingleArg(mapState), [
-      mapState,
-    ]);
+    const memoizedMapState = useMemo(
+      () => memoizeSingleArg(mapState),
+      [mapState],
+    );
 
     const state = store.getState();
     const derivedState = memoizedMapState(state);

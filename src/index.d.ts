@@ -15,7 +15,7 @@ export declare function create<
   TState,
   TAction extends Action,
   TStore extends Store<TState, TAction>,
-  TDispatch = Dispatch<TAction>
+  TDispatch = Dispatch<TAction>,
 >(): {
   StoreContext: React.Context<TStore | null>;
   useMappedState: <TResult>(mapState: (state: TState) => TResult) => TResult;
