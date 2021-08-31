@@ -28,7 +28,7 @@
     "deploy": "gh-pages -d example/build"
   },
   "peerDependencies": {
-    "react": "^16.8.1",
+    "react": "^16.8.1 || ^17.0.2",
     "redux": "^4.0.1"
   },
   "devDependencies": {
