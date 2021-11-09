@@ -5,7 +5,10 @@
 [![Build Status](https://img.shields.io/travis/com/facebookincubator/redux-react-hook.svg)](https://travis-ci.com/facebookincubator/redux-react-hook)
 [![NPM](https://img.shields.io/npm/v/redux-react-hook.svg)](https://www.npmjs.com/package/redux-react-hook)
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/redux-react-hook.svg)](https://bundlephobia.com/result?p=redux-react-hook@latest)
-[![Downloads](https://img.shields.io/npm/dw/redux-react-hook.svg)](https://www.npmjs.com/package/redux-react-hook)
+
+# This project has been DEPRECATED
+
+With the release of the [hooks API in react-redux 7](https://react-redux.js.org/api/hooks), this project has become redundant.
 
 ## Table of Contents
 
