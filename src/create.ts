@@ -7,7 +7,7 @@ import {
   useLayoutEffect,
   useMemo,
   useRef,
-  useState
+  useState,
 } from 'react';
 import {Action, Dispatch, Store} from 'redux';
 

@@ -16,9 +16,14 @@ export declare function create<
   TAction extends Action,
   TStore extends Store<TState, TAction>,
   TDispatch = Dispatch<TAction>,
->(): {
+>(options?: {
+  defaultEqualityCheck?: (a: unknown, b: unknown) => boolean;
+}): {
   StoreContext: React.Context<TStore | null>;
-  useMappedState: <TResult>(mapState: (state: TState) => TResult) => TResult;
+  useMappedState: <TResult>(
+    mapState: (state: TState) => TResult,
+    equalityCheck?: (a: TResult, b: TResult) => boolean,
+  ) => TResult;
   useDispatch: () => TDispatch;
 };
 
@@ -36,7 +41,7 @@ export declare const useDispatch: <TDispatch = Dispatch<any>>() => TDispatch;
  *   [id],
  * ));
  */
-export declare const useMappedState: <TResult>(
-  mapState: (state: any) => TResult,
-  equalityCheck?: (a: any, b: any) => boolean,
+export declare const useMappedState: <TState, TResult>(
+  mapState: (state: TState) => TResult,
+  equalityCheck?: (a: TResult, b: TResult) => boolean,
 ) => TResult;
